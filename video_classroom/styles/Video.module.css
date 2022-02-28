@@ -1,0 +1,8 @@
+.progBar {
+    margin-left: 0px;
+    margin-top: 0px;
+    width: calc(100% - 0px);
+	top: -10px;
+    height: 10px;
+	position:absolute
+}
