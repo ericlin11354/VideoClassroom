@@ -53,6 +53,7 @@ const StyledButton = styled.button<ButtonProps>`
     border: 1.5px solid rgba(0,0,0,0.1);
     border-radius: 999px;
     font-size: 0.95rem;
+    padding: 10.5px 18.5px;
 `;
 
 const Icon = styled.svg<IconProps>`

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search } from '@mui/icons-material/';
+import { Search } from '@styled-icons/fa-solid/Search';
 import { Meta, Story } from '@storybook/react';
 import { Button, ButtonProps } from '.';
 
