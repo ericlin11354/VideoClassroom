@@ -13,7 +13,7 @@ const Video: NextPage = () => {
 
 	let videoName = vid
 	if (typeof videoName != 'string'){
-		videoName = ''
+		return (<div></div>)
 	}
 
 	return (
