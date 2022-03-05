@@ -13,12 +13,12 @@ const Video: NextPage = () => {
 
 	let videoName = vid
 	if (typeof videoName != 'string'){
-		return (<div></div>)
+		videoName = ''
 	}
 
 	return (
 		<div>
-			<VideoPlayer vid={'cat.mp4'}>
+			<VideoPlayer vid={videoName}>
 			</VideoPlayer>
 		</div>
 	)
