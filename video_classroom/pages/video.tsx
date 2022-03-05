@@ -5,14 +5,23 @@ import styles from '../styles/Home.module.css'
 
 import styled from "styled-components";
 import VideoPlayer from '../components/VideoPlayer'
+import { useRouter } from 'next/router'
 
 const Video: NextPage = () => {
-  return (
-    <div>
-		<VideoPlayer>
-		</VideoPlayer>
-    </div>
-  )
+	const router = useRouter()
+	const { vid } = router.query
+
+	let videoName = vid
+	if (typeof videoName != 'string'){
+		return (<div></div>)
+	}
+
+	return (
+		<div>
+			<VideoPlayer vid={'cat.mp4'}>
+			</VideoPlayer>
+		</div>
+	)
 }
 
 export default Video
