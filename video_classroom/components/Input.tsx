@@ -1,4 +1,4 @@
-import { MainTheme} from '../styles/MainTheme';
+import { MainTheme } from '../styles/MainTheme';
 import React, { ForwardedRef, ForwardRefExoticComponent, RefAttributes, RefObject } from 'react';
 import styled from 'styled-components';
 
@@ -14,8 +14,8 @@ export const Input: React.FC<InputProps> = ({
     inputRef,
     ...props
 }): React.ReactElement => (
-    <StyledDiv>
-        <input ref={inputRef} type="text" placeholder={placeholder} />
+    <StyledDiv {...props} >
+        <StyledInput ref={inputRef} type="text" placeholder={placeholder} />
         {icon && <Icon as={icon} />}
     </StyledDiv>
 );
@@ -24,10 +24,15 @@ const StyledDiv = styled.div`
     display: flex;
     flex-direction: row;
     height: 30px;
+    border: 1px solid ${MainTheme.colors.stroke};
 `
 
+const StyledInput = styled.input`
+    border: none;
+`;
+
 const Icon = styled.svg<{ as: ForwardRefExoticComponent<RefAttributes<SVGSVGElement>> }>`
-    background-color: ${MainTheme.colors.background};
+    background-color: ${MainTheme.colors.input};
     padding: 5px;
 `
 export default Input;

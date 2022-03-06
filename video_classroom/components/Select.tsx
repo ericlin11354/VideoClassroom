@@ -25,7 +25,7 @@ export const Select: React.FC<SelectProps> = ({
 )};
 
 const StyledSelect = styled.select`
-    
+    min-width: 75px;
     border: 1.5px solid rgba(0,0,0,0.1);
 `
 
