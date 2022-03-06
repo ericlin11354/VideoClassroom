@@ -9,7 +9,7 @@ import { MainTheme } from '../styles/MainTheme';
 import React from 'react';
 import styled from 'styled-components';
 
-export interface VideoRowProps {
+export interface VideoRowProps extends React.HTMLAttributes<HTMLDivElement> {
     video?: any;
     
 }
@@ -21,7 +21,7 @@ export const VideoRow: React.FC<VideoRowProps> = ({
         <img src='https://external-preview.redd.it/W-uPL4Yr42_zNV_FFtpOZ0pRwxjZup6_aM90LdCis6k.jpg?auto=webp&s=26f5d20887104f3b8202ed5e1747d7da51135f05' />
         <TextContainer>
             <TitleHeading size="h6" >Title</TitleHeading>
-            <DescriptionHeading size="small" color={MainTheme.colors.text} >This is an unnecessarily long description...</DescriptionHeading>
+            <DescriptionHeading size="small" color={MainTheme.colors.subtext} >This is an unnecessarily long description...</DescriptionHeading>
         </TextContainer>
         <StatusContainer>
             <StatusHeading italic={true} size="small" color={MainTheme.status.professor} >Professor Answered</StatusHeading>

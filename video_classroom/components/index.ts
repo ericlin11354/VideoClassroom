@@ -6,3 +6,5 @@ export * from './VideoRow';
 export * from './Layouts';
 export * from './Text';
 export * from './Counter';
+export * from './ProfileComment';
+export * from './Objects';

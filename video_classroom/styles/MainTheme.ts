@@ -9,6 +9,7 @@ export interface MainThemeInterface {
     };
     colors: {
         text: string;
+        subtext: string;
         background: string;
         video_bg: string;
         primary: string;
@@ -51,7 +52,8 @@ export const MainTheme: MainThemeInterface = {
         },
     },
     colors: {
-        text: '#3F4A3C',
+        text: '#000000',
+        subtext: '3F4A3C',
         video_bg: '#2F4858',
         background: '#ECEBE2',
         primary: '#7EFF73',
