@@ -1,24 +1,26 @@
 import { MainTheme} from '../styles/MainTheme';
-import React, { ForwardRefExoticComponent, RefAttributes } from 'react';
+import React, { ForwardedRef, ForwardRefExoticComponent, RefAttributes, RefObject } from 'react';
 import styled from 'styled-components';
 
 export interface InputProps extends React.HTMLAttributes<HTMLInputElement> {
     placeholder?: string;
     icon?: ForwardRefExoticComponent<RefAttributes<SVGSVGElement>>;
+    inputRef?: RefObject<HTMLInputElement>;
 }
 
 export const Input: React.FC<InputProps> = ({
     placeholder,
     icon,
+    inputRef,
     ...props
 }): React.ReactElement => (
-    <StyledForm>
-        <input type="text" placeholder={placeholder} />
+    <StyledDiv>
+        <input ref={inputRef} type="text" placeholder={placeholder} />
         {icon && <Icon as={icon} />}
-    </StyledForm>
+    </StyledDiv>
 );
 
-const StyledForm = styled.form`
+const StyledDiv = styled.div`
     display: flex;
     flex-direction: row;
     height: 30px;
