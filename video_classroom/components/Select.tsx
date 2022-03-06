@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { RefObject } from 'react';
 import styled from 'styled-components';
 
 export interface SelectProps extends React.HTMLAttributes<HTMLSelectElement> {
     values?: string[];
     setSelected?: (newSelection: string) => void,
+    ref?: RefObject<HTMLSelectElement>,
 }
 
 export const Select: React.FC<SelectProps> = ({
     values = [],
+    ref,
     setSelected,
     ...props
 }): React.ReactElement => {
@@ -19,7 +21,7 @@ export const Select: React.FC<SelectProps> = ({
     }
     
     return (
-        <StyledSelect onChange={handleChange}>
+        <StyledSelect ref={ref} onChange={handleChange}>
             {mapValues(values)}
         </StyledSelect>
 )};
