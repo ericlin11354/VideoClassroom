@@ -4,6 +4,7 @@ export interface Video {
     num_likes: number;
     num_comments: number;
     date: Date;
+    video_len: string;
     thumbnail: string;
     src: string;
     status: {

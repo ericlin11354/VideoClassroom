@@ -29,7 +29,10 @@ export const VideoRow: React.FC<VideoRowProps> = ({
 
     return (
         <StyledDiv {...props}>
-            <Thumbnail src={video.thumbnail} />
+            <ThumbnailContainer>
+                <Thumbnail src={video.thumbnail} />
+                <TimeStamp>{video.video_len}</TimeStamp>
+            </ThumbnailContainer>
             <TextContainer>
                 <TitleHeading size="h6" >{video.title}</TitleHeading>
                 <DescriptionHeading size="small" color={MainTheme.colors.subtext} >{video.description}</DescriptionHeading>
@@ -86,6 +89,18 @@ const StyledDiv = styled.div`
     border-radius: 5px 5px 5px 5px;
 `;
 
+const TimeStamp = styled.div`
+    position: absolute;
+    width: 40px;
+    height: 15px;
+    color: ${MainTheme.colors.input};
+    background-color: ${MainTheme.colors.video_bg};
+    right: 0px;
+    bottom: 0px;
+    text-align: center;
+    font-size: 10px;
+`;
+
 const TitleHeading = styled(Heading)`
     margin: -5px 0 0 5px;
 `;
@@ -98,6 +113,12 @@ const TextContainer = styled.div`
 `;
 
 const Thumbnail = styled.img`
+    width: 100%;
+    height: 100%;
+`;
+
+const ThumbnailContainer = styled.div`
+    position: relative;
     width: 10%;
 `;
 

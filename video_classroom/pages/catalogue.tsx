@@ -18,6 +18,7 @@ const videoList: Video[] = [
         num_comments: 69,
         num_likes: 42,
         date: new Date('2021-04-20'),
+        video_len: '42:00',
         status: {
             professor_answered: true,
             student_answered: true,
@@ -33,6 +34,7 @@ const videoList: Video[] = [
         num_likes: 100,
         num_comments: 22,
         date: new Date('2021-06-09'),
+        video_len: '6:90',
         status: {
             professor_answered: false,
             student_answered: true,
@@ -48,6 +50,7 @@ const videoList: Video[] = [
         num_likes: 0,
         num_comments: 1,
         date: new Date('2021-01-09'),
+        video_len: '12:34',
         status: {
             professor_answered: true,
             student_answered: false,
