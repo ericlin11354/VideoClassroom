@@ -6,11 +6,11 @@ import {
 } from "react";
 import { Title } from "@mui/icons-material";
 import moment from "moment";
-import {secToTime} from '../helpers/timeHelper';
+import {secToTime} from '../../helpers/timeHelper';
 import {HandThumbsUp, HandThumbsUpFill} from '@styled-icons/bootstrap';
 import {ChatBubbleOutline} from '@styled-icons/material-outlined';
 import Commenter, { CommenterProps } from "./Commenter";
-import { CommentData } from "./CommentData";
+import { CommentData } from "../CommentData";
 
 export interface ChatBubbleProps {
     commentData: CommentData;

@@ -4,8 +4,9 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
 import styled from "styled-components";
-import VideoPlayer from '../components/VideoPlayer'
+import VideoPlayer from '../components/Video/VideoPlayer'
 import { useRouter } from 'next/router'
+import { NavBar } from '../components';
 
 const Video: NextPage = () => {
 	const router = useRouter()
@@ -18,6 +19,7 @@ const Video: NextPage = () => {
 
 	return (
 		<div>
+			<NavBar></NavBar>
 			<VideoPlayer vid={videoName}>
 			</VideoPlayer>
 		</div>

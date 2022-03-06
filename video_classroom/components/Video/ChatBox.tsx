@@ -8,7 +8,7 @@ import {
 import VideoBar from './VideoBar';
 import ChatBubble, { ChatBubbleProps } from "./ChatBubble";
 import { timeStamp } from "console";
-import { CommentData } from "./CommentData";
+import { CommentData } from "../CommentData";
 import Commenter from "./Commenter";
 import {ChatBubbleOutline} from '@styled-icons/material-outlined';
 

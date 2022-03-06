@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useRef, useState } from "react";
-import videoStyles from '../styles/Video.module.css'
-import DraggableBar from '../components/DraggableBar'
+import videoStyles from '../../styles/Video.module.css'
+import DraggableBar from '../DraggableBar'
 
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded';
@@ -30,6 +30,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     
     const [isFocused, setIsFocused] = useState<boolean>(false);
     const [isInUse, setIsInUse] = useState<boolean>(false);
+    const [volumeBarHovered, setVolumeBarHovered] = useState<boolean>(false);
     const [volumeBarOpen, setVolumeBarOpen] = useState<boolean>(false);
 
 	const muteButtonRef = useRef<HTMLButtonElement>(null);
@@ -122,10 +123,12 @@ const PopupBox = styled.div<{isInUse: boolean}>`
 
     bottom: calc(-100% - 40px);
     transition: 0.5s;
+    opacity: 0;
 
     ${({ isInUse }): string =>
     isInUse
         ? `
+        opacity: 1;
         transition: 0.5s ease-out 1;
         bottom: calc(100% + 15px);
     `

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import VideoBar from './VideoBar';
 import ChatBox from "./ChatBox";
-import { getTestComments } from "./CommentData";
+import { getTestComments } from "../CommentData";
 
 interface VideoPlayerProps {
     vid: string;
