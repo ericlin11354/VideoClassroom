@@ -36,9 +36,17 @@ export const ChatBox: React.FC<VideoPlayerProps> = ({
     
     const addComment = (newElement: CommentData): void => {
         if (newElement.parent){
+            //already being done in CommentData
             // newElement.parent.replies.unshift(newElement);
         } else {
-            comments.push(newElement);
+            // comments.push(newElement);
+            let targetIndex = comments.findIndex((element) => (element.timestamp || 0) > (newElement.timestamp || 0));
+            if (targetIndex == -1){
+                comments.push(newElement);
+            } else {
+                comments.splice(targetIndex, 0, newElement);
+            }
+            
         }
 
         const nextComments = comments.slice()
