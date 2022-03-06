@@ -32,7 +32,6 @@ export const LoginPanel: React.FC<VideoPlayerProps> = ({
     const [newUserType, setNewUserType] = useState<string>('user');
     
     const router = useRouter();
-    console.log(router.query)
     
     const toggleSignin = (e: React.MouseEvent<HTMLElement>) => {
         setWarnMsg('')
@@ -75,7 +74,6 @@ export const LoginPanel: React.FC<VideoPlayerProps> = ({
 	}
 
     const notify = (msg: string, isPositive?: boolean) => {
-        console.log(msg)
         if(isPositive == undefined){
             isPositive = false
         }
