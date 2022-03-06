@@ -14,6 +14,10 @@ export const VideoPlayer: React.FC<PopupProps> = ({
 	...props
 }): React.ReactElement => {
 
+    const toggleFunc = (e: React.MouseEvent<HTMLElement>) => {
+		setIsOpenFunc(!isOpen)
+	}
+
     return(
         <PopupSuperWrapper>
                 <PopupFrame isOpen={isOpen} {...props}>
@@ -25,6 +29,7 @@ export const VideoPlayer: React.FC<PopupProps> = ({
 
 const PopupSuperWrapper = styled.div<{}>`
     pointer-events: none;
+    z-index: 2;
     position: absolute;
     width: 100%;
     height: 100%;
@@ -35,13 +40,14 @@ const PopupFrame = styled.div<{isOpen: boolean}>`
     background-color: ${MainTheme.colors.primary};
     padding: ${MainTheme.dimensions.padding.container};
 
-    z-index: 2;
+    z-index: 3;
 
     transition: 0.5s;
     opacity: 0;
     top: -50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    pointer-events: all;
 
     ${({ isOpen }): string =>
     isOpen

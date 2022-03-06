@@ -39,11 +39,13 @@ const Switcher = styled.div<{}>`
 const LineForm = styled.input<{}>`
 `;
 const LoginFrame = styled.div<{}>`
-	// position: absolute;
 	position: relative;
     width: 50vw;
     height: 50vh;
     background-color: #ffffff;
+    
+    display: flex;
+    flex-direction: column;
     
     overflow: auto;
 `;
