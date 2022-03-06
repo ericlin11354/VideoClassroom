@@ -15,6 +15,7 @@ interface draggableBarProps {
 	defaultFracFull?: number;
 	barFillProps?: {};
 	knobProps?: {};
+	isVertical?: boolean;
 	draggerInfo: draggerInfo;
 }
 
@@ -24,6 +25,7 @@ export const DraggableBar: React.FC<draggableBarProps> = ({
 	barFillProps,
 	knobProps,
     draggerInfo,
+	isVertical=false,
 	children,
 	...props
 }): React.ReactElement => {
@@ -38,7 +40,7 @@ export const DraggableBar: React.FC<draggableBarProps> = ({
 		if (barRef && barRef.current){
 			const barRect = barRef.current.getBoundingClientRect()
 
-			let fill = (mouseEvent.clientX - barRect.x) / barRect.width
+			let fill = isVertical && (barRect.y + barRect.height - mouseEvent.clientY) / barRect.height || (mouseEvent.clientX - barRect.x) / barRect.width
 			fill =  Math.min(Math.max(fill, 0), 1)
 			draggerInfo.onSliderChanged(fill)
 		}
@@ -74,16 +76,19 @@ export const DraggableBar: React.FC<draggableBarProps> = ({
     };
 
 	const knobPosition = {
-		left: `calc(${-knobCirc/2}px + ${fracFull*100}%)`
+		left: isVertical && `calc(50% - ${knobCirc/2}px)` || `calc(${-knobCirc/2}px + ${fracFull*100}%)`,
+		bottom: isVertical && `calc(${-knobCirc/2}px + ${fracFull*100}%)` || `-50%`,
 	}
 	const fillPosition = {
-		width: `${draggerInfo.fracFull*100}%`
+		width: isVertical && `100%` || `${draggerInfo.fracFull*100}%`,
+		height: isVertical && `${draggerInfo.fracFull*100}%` || `100%`,
+		top: isVertical && `calc(100% - ${draggerInfo.fracFull*100}%)` || ``,
 	}
 
 	return (
 		<Bar onMouseDown={engageMouse} ref={barRef} {...props}>
-			<BarFill style={fillPosition} fracFull={fracFull} {...barFillProps}></BarFill>
-			<Knob style={knobPosition} knobCirc={knobCirc} fracFull={fracFull} {...knobProps}></Knob>
+			<BarFill style={fillPosition} fracFull={fracFull} isVertical={isVertical} {...barFillProps}></BarFill>
+			<Knob style={knobPosition} knobCirc={knobCirc} fracFull={fracFull} isVertical={isVertical} {...knobProps}></Knob>
 		</Bar>
 	);
 };
@@ -96,22 +101,36 @@ const Bar = styled.div<{}>`
     border-radius: 0%;
 `;
 
-const BarFill = styled.div<{fracFull: number}>`
+const BarFill = styled.div<{isVertical?: boolean, fracFull: number}>`
 	position: relative;
     background-color: blue;
     height: 100%;
     ${({ fracFull }) => ``}
     border-radius: 0%;
+    ${({ isVertical}) => 
+	isVertical
+	? `
+		vertical-align: bottom;
+	`
+	: ``}
 `;
 
-const Knob = styled.button<{knobCirc: number, fracFull: number}>`
+const Knob = styled.button<{isVertical?:boolean, knobCirc: number, fracFull: number}>`
 	position: absolute;
-    ${({ knobCirc, fracFull }) => `
-        width: ${knobCirc}px;
-        height: ${knobCirc}px;
+    ${({ knobCirc }) => `
+		width: ${knobCirc}px;
+		height: ${knobCirc}px;
+	`}
+    ${({ isVertical, knobCirc, fracFull }) => 
+	isVertical
+	? `
+		left: calc(${-knobCirc/2}px + 50%);
+		text-align: center;
+	`
+	: `
 		top: calc(${-knobCirc/2}px + 50%);
-    `}
-	vertical-align: middle;
+		vertical-align: middle;
+	`}
     border-radius: 50%;
 `;
 

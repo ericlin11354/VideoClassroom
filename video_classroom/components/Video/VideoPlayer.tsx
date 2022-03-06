@@ -1,8 +1,11 @@
 import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import VideoBar from './VideoBar';
+import ChatBox from "./ChatBox";
+import { getTestComments } from "../CommentData";
 
 interface VideoPlayerProps {
+    vid: string;
 	knobDiam?: number;
 	defaultFracFull?: number;
 	barFillProps?: {};
@@ -10,6 +13,7 @@ interface VideoPlayerProps {
 }
 
 export const VideoPlayer: React.FC<VideoPlayerProps> = ({
+    vid,
 	knobDiam=10,
 	defaultFracFull=0,
 	barFillProps,
@@ -23,11 +27,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     const [videoReady, setVideoReady] = useState<boolean>(false);
     const [videoPlaying, setVideoPlaying] = useState<boolean>(false);
 
+    const [volume, setVolume] = useState<number>(0);
+
 	const setVideoProgress = (vidProg: number, dontUpdateVid?: boolean) => {
         if (vidRef && vidRef.current){
             const video = vidRef.current
 
-            if (!dontUpdateVid){
+            if (isFinite(vidProg) && isFinite(videoMaxTime) && !dontUpdateVid){
                 video.currentTime = vidProg * videoMaxTime
             }
             setVideoTime(vidProg * videoMaxTime)
@@ -46,6 +52,8 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 video.pause()
             }
 
+            video.volume = volume
+
             setVideoMaxTime(video.duration)
 
             setVideoPlaying(!video.paused)
@@ -59,19 +67,29 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
     const videoInfo = {
         videoProgress: videoTime / videoMaxTime,
         setVideoProgress: setVideoProgress,
+
         videoPlaying: videoPlaying,
         setVideoPlaying: setVideoPlaying,
+
+        volume: volume,
+        setVolume: setVolume,
     }
 
     return(
-        <VideoPlayerFrame>
-            <VideoViewport ref={vidRef} loop muted autoPlay width="100%" height="100%">
-                <source src="digging.mp4" type="video/mp4"></source>
-            </VideoViewport>
-            <VideoBarContainer>
-                <VideoBar videoInfo={videoInfo}></VideoBar>
-            </VideoBarContainer>
-        </VideoPlayerFrame>
+        <VideoChatFrame>
+            <VideoPlayerFrame>
+                <VideoViewport ref={vidRef} loop width="100%" height="100%">
+                    <source src={vid} type="video/mp4"></source>
+                </VideoViewport>
+                <VideoBarContainer>
+                    <VideoBar videoInfo={videoInfo}></VideoBar>
+                </VideoBarContainer>
+            </VideoPlayerFrame>
+            <ChatFrame>
+                <ChatBox videoid={vid} videoTime={videoTime} MsgList={getTestComments()}>
+                </ChatBox>
+            </ChatFrame>
+        </VideoChatFrame>
     )
 }
 const VideoViewport = styled.video<{}>`
@@ -85,8 +103,25 @@ const VideoBarContainer = styled.div<{}>`
     bottom: 0;
 `;
 const VideoPlayerFrame = styled.div<{}>`
-	position: absolute;
+    position: absolute;
     width: 60%;
+    height: 100%;
+    background-color: #111111;
+    
+    overflow: hidden;
+`;
+const ChatFrame = styled.div<{}>`
+    right: 0px;
+    position: absolute; 
+    width: 40%;
+    height: 100%;
+    background-color: #111111;
+    
+    overflow: hidden;
+`;
+const VideoChatFrame = styled.div<{}>`
+	position: absolute;
+    width: 100%;
     height: 60%;
     background-color: #111111;
     
