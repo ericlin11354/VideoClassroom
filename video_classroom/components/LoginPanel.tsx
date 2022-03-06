@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import Select from "./Select";
 import { useRouter } from "next/router";
+import Cookies from 'universal-cookie';
+import { isUserLoggedIn } from "../helpers/permHelper";
 
 interface VideoPlayerProps {
 	knobDiam?: number;
@@ -59,14 +61,18 @@ export const LoginPanel: React.FC<VideoPlayerProps> = ({
 		if((UN === 'user' || UN === 'admin') && UN === PW){
 
             //actually log in here
-            router.replace({
-                pathname: router.pathname,
-                query: 
-                {
-                    ...router.query,
-                    username: UN,
-                },
-            })
+            // router.replace({
+            //     pathname: router.pathname,
+            //     query: 
+            //     {
+            //         ...router.query,
+            //         username: UN,
+            //     },
+            // })
+            const cookies = new Cookies();
+            cookies.set("username", UN, {path: "/"});
+
+            // console.log(isUserLoggedIn())
 
             return ''
         }
