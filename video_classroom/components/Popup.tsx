@@ -19,20 +19,22 @@ export const VideoPlayer: React.FC<PopupProps> = ({
 	}
 
     return(
-        <PopupSuperWrapper>
+            <PopupWrapper>
                 <PopupFrame isOpen={isOpen} {...props}>
                     {children}
                 </PopupFrame>
-        </PopupSuperWrapper>
+            </PopupWrapper>
     )
 }
 
-const PopupSuperWrapper = styled.div<{}>`
+const PopupWrapper = styled.div<{}>`
     pointer-events: none;
     z-index: 2;
-    position: absolute;
+    position: fixed;
+    box-sizing: border-box; 
     width: 100%;
     height: 100%;
+    overflow: hidden;
 `
 
 const PopupFrame = styled.div<{isOpen: boolean}>`
