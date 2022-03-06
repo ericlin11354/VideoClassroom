@@ -3,13 +3,19 @@ import {
     Input,
     NavBar,
     Select,
+    UserStatusProps,
     VideoRow,
 } from '../components';
 import React from 'react';
 import { Search } from '@styled-icons/bootstrap/Search';
 import styled from 'styled-components';
 
-const Video: NextPage = () => {
+export interface CatalogueProps extends UserStatusProps{
+};
+
+const Catalogue: NextPage<CatalogueProps> = ({
+    status = 'Admin',
+}) => {
 
     return (
         <PageContainer>
@@ -54,4 +60,4 @@ const PageContainer = styled.div`
     width: 100%;
 `;
 
-export default Video;
+export default Catalogue;

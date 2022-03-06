@@ -11,13 +11,13 @@ import styled from 'styled-components';
 import { Upload } from '@styled-icons/boxicons-regular/Upload';
 import Popup from './Popup';
 import LoginPanel from './LoginPanel';
+import { UserStatusProps } from './Objects';
 
-export interface NavBarProps extends React.HTMLAttributes<HTMLDivElement>{
-
+export interface NavBarProps extends React.HTMLAttributes<HTMLDivElement>, UserStatusProps{
 }
 
 export const NavBar: React.FC<NavBarProps> = ({
-
+    status = 'Admin',
 }): React.ReactElement => {
     const [isLoginOpen, setIsOpen] = useState<boolean>(false);
 
@@ -30,10 +30,10 @@ export const NavBar: React.FC<NavBarProps> = ({
             <LeftContainer>
                 <img src="https://assets.hongkiat.com/uploads/psd-text-svg/logo-example.jpg" />
                 <Select values={['CSC309', 'CSC343', 'CSC384']} />
-                <Button icon={RecordCircle}>Record</Button>
+                {status == 'Admin' && <Button icon={RecordCircle}>Record</Button>}
             </LeftContainer>
             <RightContainer>
-                <Button icon={Upload} />
+                {status == 'Admin' && <Button icon={Upload} />}
                 <Button icon={PersonCircle} onClick={handleLoginClick}/>
                 <Button icon={Exit} />
             </RightContainer>
