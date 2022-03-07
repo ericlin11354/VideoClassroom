@@ -4,11 +4,15 @@ import styled from 'styled-components';
 export interface SelectProps extends React.HTMLAttributes<HTMLSelectElement> {
     values?: string[];
     setSelected?: (newSelection: string) => void,
+    selectRef?: RefObject<HTMLSelectElement>;
+    onClick?: React.MouseEventHandler;
 }
 
 export const Select: React.FC<SelectProps> = ({
     values = [],
     setSelected,
+    selectRef,
+    onClick = () => null,
     ...props
 }): React.ReactElement => {
     const mapValues = (values: string[]): React.ReactNode[] => 
@@ -19,7 +23,7 @@ export const Select: React.FC<SelectProps> = ({
     }
     
     return (
-        <StyledSelect onChange={handleChange}>
+        <StyledSelect ref={selectRef} onChange={handleChange} onClick={onClick}>
             {mapValues(values)}
         </StyledSelect>
 )};

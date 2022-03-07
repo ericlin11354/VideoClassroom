@@ -2,6 +2,7 @@ import {
     Button,
     Input,
     Select,
+    UploadPanel,
 } from '.';
 import { Exit } from '@styled-icons/icomoon/Exit';
 import { MainTheme } from '../styles/MainTheme';
@@ -14,22 +15,33 @@ import { PlusCircle } from '@styled-icons/bootstrap/PlusCircle';
 import Popup from './Popup';
 import LoginPanel from './LoginPanel';
 import { UserStatusProps } from './Objects';
+import router, { useRouter } from 'next/router';
 
 export interface NavBarProps extends React.HTMLAttributes<HTMLDivElement>, UserStatusProps{
-    courses?: string[];
+    onCourseChange?: Function;
 }
 
 export const NavBar: React.FC<NavBarProps> = ({
     status = 'Admin',
-    courses = [],
+    onCourseChange = () => null,
 }): React.ReactElement => {
-    const [isLoginOpen, setIsOpen] = useState<boolean>(false);
-    const [currentCourses, setCurrentCourses] = useState<string[]>(courses);
+    const [isLoginOpen, setIsLoginOpen] = useState(false);
+    const [isUploadOpen, setIsUploadOpen] = useState(false);
+    const [currentCourses, setCurrentCourses] = useState<string[]>(['CSC309', 'MAT137']);
     const refNewCourse = useRef() as RefObject<HTMLInputElement>;
 
+    const router = useRouter();
+    const { cid } = router.query;
+
     const handleLoginClick = (e: React.MouseEvent<HTMLElement>) => {
-		setIsOpen(!isLoginOpen)
+		setIsLoginOpen(!isLoginOpen);
+        setIsUploadOpen(false);
 	};
+
+    const handleUploadClick = (e: React.MouseEvent<HTMLElement>) => {
+        setIsUploadOpen(!isUploadOpen);
+        setIsLoginOpen(false);
+    }
 
     const addClass = () => {
         let name = refNewCourse.current?.value;
@@ -41,22 +53,36 @@ export const NavBar: React.FC<NavBarProps> = ({
         }
     };
 
+    const changeCourse = (newSelection: string) => {
+
+        router.replace({
+            pathname: '/catalogue',
+            query: 
+            {
+                cid: newSelection
+            },
+        })
+
+        onCourseChange();
+    };
+
     return(
         <Container>
             <LeftContainer>
                 <Logo src="https://assets.hongkiat.com/uploads/psd-text-svg/logo-example.jpg" />
-                <Select values={currentCourses} />
+                <Select values={currentCourses} setSelected={changeCourse} />
                 {status == 'Admin' && <Button icon={RecordCircle}>Record</Button>}
                 <Input inputRef={refNewCourse} placeholder="Join a class..." />
                 <Button onClick={addClass} >Add Class</Button>
             </LeftContainer>
             <RightContainer>
-                {status == 'Admin' && <Button icon={Upload} />}
+                {status == 'Admin' && <Button icon={Upload} onClick={handleUploadClick} />}
                 <Button icon={PersonCircle} onClick={() => window.location.replace("profile")} />
                 <Button icon={Exit} onClick={handleLoginClick}/>
             </RightContainer>
-            <Popup isOpen={isLoginOpen} setIsOpenFunc={setIsOpen}>
-                <LoginPanel></LoginPanel>
+            <Popup isOpen={isLoginOpen || isUploadOpen} setIsOpenFunc={setIsLoginOpen}>
+                {isLoginOpen && <LoginPanel></LoginPanel>}
+                {isUploadOpen && <UploadPanel></UploadPanel>}
             </Popup>
         </Container>
     )
