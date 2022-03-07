@@ -3,7 +3,8 @@ import { Heading } from './Text';
 import { ChatLeft } from '@styled-icons/bootstrap/ChatLeft';
 import { Close } from '@styled-icons/evaicons-solid/Close';
 import { Counter } from './Counter';
-import { HeartFill } from '@styled-icons/bootstrap/HeartFill';
+// import { HeartFill } from '@styled-icons/bootstrap/HeartFill';
+import { Eye } from '@styled-icons/bootstrap/Eye';
 import { Edit } from '@styled-icons/boxicons-regular/Edit';
 import { MainTheme } from '../styles/MainTheme';
 import moment from "moment";
@@ -11,6 +12,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Video } from '../components/Objects/Video';
 import router from 'next/router';
+import { isUserAdmin } from '../helpers/permHelper';
 
 export interface VideoRowProps extends React.HTMLAttributes<HTMLDivElement> {
     video: Video;
@@ -56,11 +58,11 @@ export const VideoRow: React.FC<VideoRowProps> = ({
                 {video.status.unresolved_answers && <StatusHeading italic={true} size="small" color={MainTheme.status.unresolved} >Unresolved Answer(s)</StatusHeading>}
             </StatusContainer>
             <PermissionsHeading size="small" bold={true} italic={true} >{displayVisibility(video.visibility)}</PermissionsHeading>
-            <Counter bold={true} icon={HeartFill} >{video.num_likes}</Counter>
+            <Counter bold={true} icon={Eye} >{video.num_likes}</Counter>
             <Counter bold={true} icon={ChatLeft} >{video.num_comments}</Counter>
             <DateHeading size="small" >{moment(video.date).format('MM/DD/YYYY')}</DateHeading>
-            <Button icon={Edit} />
-            <Button onClick={removeClick} icon={Close} />
+            {isUserAdmin() && <Button icon={Edit} />}
+            {isUserAdmin() && <Button onClick={removeClick} icon={Close} />}
         </StyledDiv>
     )
 };

@@ -11,6 +11,7 @@ import React, { ChangeEventHandler, EventHandler, FormEventHandler, RefObject, u
 import { Search } from '@styled-icons/bootstrap/Search';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import { isUserAdmin, isUserLoggedIn } from '../helpers/permHelper';
 
 const videoList: Video[] = [
     {
@@ -103,7 +104,10 @@ const Catalogue: NextPage<CatalogueProps> = ({
         // console.log(cid);
         // console.log(videos);
         return (
-            currentVideos.map((video, index) => <VideoRow key={index} video={video} removeClick={() => removeVideo(index)}/>)
+            currentVideos.map((video, index) => 
+            ((video.visibility != 'TAProfs' && isUserLoggedIn()) || isUserAdmin()) && 
+            <VideoRow key={index} video={video} removeClick={() => removeVideo(index)}/> || <></>
+            )
         )
     }
 
@@ -152,7 +156,7 @@ const Catalogue: NextPage<CatalogueProps> = ({
                 setCurrentVideos(temp);
                 break;
             }
-            case 'Total Likes': {
+            case 'Total Comments': {
                 temp.sort((a, b) => b.num_comments - a.num_comments);
                 setCurrentVideos(temp);
                 break;
@@ -191,7 +195,7 @@ const Catalogue: NextPage<CatalogueProps> = ({
             <CatalogueContainer>
                 <Filters>
                     <Input onChange={searchVideos} placeholder="Search..." icon={Search} />
-                    <Select selectRef={refFilterSort} values={['Sort Videos', 'Upload Date', 'Total Views', 'Total Likes']} onClick={sortVideos}/>
+                    <Select selectRef={refFilterSort} values={['Sort Videos', 'Upload Date', 'Total Views', 'Total Comments']} onClick={sortVideos}/>
                     <Select selectRef={refFilterVisibility} values={['All Videos', 'TAProfs']} onClick={filterVideos} />
                 </Filters>
                 <VideoList>
