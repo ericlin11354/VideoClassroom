@@ -106,6 +106,7 @@ export const LoginPanel: React.FC<VideoPlayerProps> = ({
                     notify(result)
                 } else {
                     notify('Success', true)
+                    location.reload();
                 }
             }
         } else {
@@ -120,6 +121,7 @@ export const LoginPanel: React.FC<VideoPlayerProps> = ({
                     notify(result)
                 } else {
                     notify('Success', true)
+                    location.reload();
                 }
             }
         }

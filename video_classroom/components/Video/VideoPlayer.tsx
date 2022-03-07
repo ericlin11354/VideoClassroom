@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import VideoBar from './VideoBar';
 import ChatBox from "./ChatBox";
 import { getTestComments } from "../CommentData";
+import moment from "moment";
 
 interface VideoPlayerProps {
     vid: string;
@@ -75,23 +76,68 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         setVolume: setVolume,
     }
 
+    //TODO: hardcoded stuff
+    const videoTitle = 'Hello World'
+    const submitterUN = 'Prof. Professor'
+    const submitTime = moment()
+    const courseName = 'csc404'
+    const videoDesc = 'This is my first video.'
+
     return(
-        <VideoChatFrame>
-            <VideoPlayerFrame>
-                <VideoViewport ref={vidRef} loop width="100%" height="100%">
-                    <source src={vid} type="video/mp4"></source>
-                </VideoViewport>
-                <VideoBarContainer>
-                    <VideoBar videoInfo={videoInfo}></VideoBar>
-                </VideoBarContainer>
-            </VideoPlayerFrame>
-            <ChatFrame>
-                <ChatBox videoid={vid} videoTime={videoTime} MsgList={getTestComments()}>
-                </ChatBox>
-            </ChatFrame>
-        </VideoChatFrame>
+        <VideoChatDescFrame>
+            <VideoChatFrame>
+                <VideoPlayerFrame>
+                    <VideoViewport ref={vidRef} width="100%" height="100%">
+                        <source src={vid} type="video/mp4"></source>
+                    </VideoViewport>
+                    <VideoBarContainer>
+                        <VideoBar videoInfo={videoInfo}></VideoBar>
+                    </VideoBarContainer>
+                </VideoPlayerFrame>
+                <ChatFrame>
+                    <ChatBox videoid={vid} videoTime={videoTime} MsgList={getTestComments()}>
+                    </ChatBox>
+                </ChatFrame>
+            </VideoChatFrame>
+            <DescFrame>
+                <TextRow>
+                    <TitleItem>{videoTitle}</TitleItem>
+                </TextRow>
+                <TextRow>
+                    <DescItem>Part of {courseName}</DescItem>
+                </TextRow>
+                <TextRow>
+                    <DescItem>Submitted by {submitterUN} on {submitTime.toDate().toDateString()}</DescItem>
+                </TextRow>
+                    <br/>
+                <TextRow>
+                    <DescItem>{videoDesc}</DescItem>
+                </TextRow>
+            </DescFrame>
+        </VideoChatDescFrame>
     )
 }
+const TextRow = styled.div<{}>`
+`
+const TitleItem = styled.span<{}>`
+    font-size: 40px;
+    color: white;
+`
+const DescItem = styled.span<{}>`
+    color: white;
+`
+const DescFrame = styled.div<{}>`
+	position: absolute;
+    width: 100%;
+    height: calc(25% - 0px);
+    top: calc(75% - 0px);
+    bottom: 0px;
+    background-color: #111111;
+    padding: 10px;
+    
+    overflow-y: scroll;
+`;
+
 const VideoViewport = styled.video<{}>`
 
 `
@@ -122,8 +168,15 @@ const ChatFrame = styled.div<{}>`
 const VideoChatFrame = styled.div<{}>`
 	position: absolute;
     width: 100%;
-    height: 60%;
+    height: calc(75% - 0px);
     background-color: #111111;
+    
+    overflow: hidden;
+`;
+const VideoChatDescFrame = styled.div<{}>`
+	position: absolute;
+    width: 100%;
+    height: calc(100% - 100px);
     
     overflow: hidden;
 `;

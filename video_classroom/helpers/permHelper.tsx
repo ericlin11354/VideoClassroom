@@ -10,6 +10,11 @@ export const isUserLoggedIn = (): boolean =>  {
     }
 }
 
+export const getUsername = (): string =>  {
+    const cookies = new Cookies();
+    return cookies.get("username")
+}
+
 export const isUserAdmin = (): boolean =>  {
     const cookies = new Cookies();
     if (cookies.get("username") && cookies.get("username") == 'admin') {

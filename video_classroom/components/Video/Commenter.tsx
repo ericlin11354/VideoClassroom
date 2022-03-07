@@ -4,29 +4,45 @@ import {
     useRef, 
     MouseEvent, 
 } from "react";
-import { Title } from "@mui/icons-material";
-import moment from "moment";
 import {secToTime} from '../../helpers/timeHelper';
-import {HandThumbsUp, HandThumbsUpFill} from '@styled-icons/bootstrap';
+import {HandThumbsUp, HandThumbsUpFill, Star, StarFill, Eye, EyeFill} from '@styled-icons/bootstrap';
 import {ChatBubbleOutline} from '@styled-icons/material-outlined';
-import { ChatBubbleProps } from "./ChatBubble";
-import { CommentData, newComment } from "../CommentData";
+import {Delete} from '@styled-icons/fluentui-system-filled';
+import { CommentData } from "../CommentData";
+import { getUsername, isUserAdmin } from "../../helpers/permHelper";
 
 export interface CommenterProps {
 	timestamp?: number;
     parentComment?: CommentData;
 
-    isOpen?: boolean;
     addCommentFunc: (newElement: CommentData) => void;
+    isCommenterOpen?: boolean;
     toggleCommenterFunc: (target: boolean) => void;
+
+    toggleLikeFunc?: () => void;
+
+    isRepliesOpen?: boolean;
+    toggleRepliesFunc?: (target: boolean) => void,
+
+    deleteCommentFunc?: () => void,
+    markCommentFunc?: () => void,
 }
 
 export const Commenter: React.FC<CommenterProps> = ({
 	timestamp=1,
     parentComment,
-    isOpen=false,
+
     addCommentFunc,
+    isCommenterOpen=false,
     toggleCommenterFunc,
+    
+    toggleLikeFunc,
+
+    isRepliesOpen,
+    toggleRepliesFunc,
+
+    deleteCommentFunc,
+    markCommentFunc,
 
 	children,
 	...props
@@ -46,9 +62,9 @@ export const Commenter: React.FC<CommenterProps> = ({
                 return
             }
 
-            const newCommentData: CommentData = newComment(
+            const newCommentData: CommentData = new CommentData(
                 newCommentContent,
-                'bobina',
+                getUsername(),
                 timestamp,
                 parentComment,
             )
@@ -57,14 +73,71 @@ export const Commenter: React.FC<CommenterProps> = ({
             form.value = ''
         }
 	}
+    
+    const toggleCommenter = (e: MouseEvent<HTMLButtonElement>) => {
+        toggleCommenterFunc(!isCommenterOpen)
+	}
+
+    const deleteComment = (e: MouseEvent<HTMLButtonElement>) => {
+        if (parentComment && parentComment.parent) {
+            const index = parentComment.parent.replies.findIndex((element) => (parentComment == element))
+            parentComment.parent.replies.splice(index, 1)
+        }
+        deleteCommentFunc && deleteCommentFunc()
+	}
+
+    const markComment = (e: MouseEvent<HTMLButtonElement>) => {
+        markCommentFunc && markCommentFunc()
+	}
+
+    const toggleReplies = (e:  MouseEvent<HTMLButtonElement>) => {
+        toggleRepliesFunc && toggleRepliesFunc(!isRepliesOpen)
+	}
+
+    const isLikedByUser = parentComment && parentComment.likedUsers.findIndex((element) => (getUsername() == element)) != -1
+
+    const numComments = parentComment && parentComment.replies.length || 0
+
+    const questionAnswered = parentComment && parentComment.getRootComment() && parentComment.getRootComment()?.answer
 
 	return (
-		<CommenterContainer isOpen={isOpen} {...props}>
-            <FormBox ref={formRef}/>
-            <SubmitButton onClick={addComment}>Submit</SubmitButton>
-		</CommenterContainer>
+        <ReplyDivider> 
+            {parentComment && <NumItems>{parentComment.likes > 0 && parentComment.likes}</NumItems>}
+            {parentComment && <CommentButton onClick={toggleLikeFunc}>{isLikedByUser && <HandThumbsUpFill className={'buttonIcon'} /> || <HandThumbsUp className={'buttonIcon'} />}</CommentButton>}
+            <NumItems>{numComments > 0 && numComments}</NumItems>
+            <CommentButton onClick={toggleCommenter} ><ChatBubbleOutline className={'buttonIcon'} /></CommentButton>
+            {isUserAdmin() && parentComment && <CommentButton onClick={deleteComment} ><Delete className={'buttonIcon'} /></CommentButton>}
+            {isUserAdmin() && parentComment && parentComment.parent && <CommentButton onClick={markComment} >{questionAnswered && <StarFill className={'buttonIcon'} /> || <Star className={'buttonIcon'} />}</CommentButton>}
+            {(!parentComment || parentComment.replies.length > 0) && parentComment && <CommentButton onClick={toggleReplies} >{isRepliesOpen && <EyeFill className={'buttonIcon'} /> || <Eye className={'buttonIcon'} />}</CommentButton>}
+            <CommenterContainer isOpen={isCommenterOpen} {...props}>
+                <FormBox ref={formRef}/>
+                <SubmitButton onClick={addComment}>Submit</SubmitButton>
+            </CommenterContainer>
+        </ReplyDivider>
 	);
 };
+
+const NumItems = styled.span<{}>`
+    margin-left: 5px;
+    color: #ffffff;
+    overflow: auto;
+`;
+
+const ReplyDivider = styled.div<{}>`
+	position: relative;
+    // background-color: pink;
+    margin-right: 5px;
+    margin-left: 25px;
+    width:  calc(100% - 30px);
+    overflow: hidden;
+    border-radius: 15px;
+`;
+const CommentButton = styled.button<{}>`
+    margin: 4px;
+    height: 25px;
+    aspect-ratio: 1;
+    border-radius: 100%;
+`
 
 const CommenterContainer = styled.div<{isOpen: boolean}>`
 	position: relative;

@@ -30,36 +30,47 @@ export const ChatBox: React.FC<VideoPlayerProps> = ({
     const [comments, setComments] = useState<Array<CommentData>>(MsgList);
     const [isCommenterOpen, setIsCommenterOpen] = useState<boolean>(false);
 
-    const toggleCommenter = (e: MouseEvent<HTMLButtonElement>) => {
-        setIsCommenterOpen(!isCommenterOpen)
-	}
+    const updateComments = (): void => {
+        const nextComments = comments.slice()
+        setComments([...nextComments])
+    }
     
     const addComment = (newElement: CommentData): void => {
         if (newElement.parent){
-            //already being done in CommentData
-            // newElement.parent.replies.unshift(newElement);
+
         } else {
-            // comments.push(newElement);
             let targetIndex = comments.findIndex((element) => (element.timestamp || 0) > (newElement.timestamp || 0));
             if (targetIndex == -1){
-                comments.push(newElement);
+                comments.push(newElement)
             } else {
-                comments.splice(targetIndex, 0, newElement);
+                comments.splice(targetIndex, 0, newElement)
             }
             
         }
 
-        const nextComments = comments.slice()
-        setComments([...nextComments]);
+        updateComments()
+    }
+
+    const removeComment = (target: CommentData): void => {
+        // change this to use id as target later
+
+        let targetIndex = comments.findIndex((element) => (element === target))
+        if (targetIndex != -1){
+            comments.splice(targetIndex, 1)
+        }
+        
+        updateComments()
     }
 
     const renderBubble = (chatBubbleInfo: CommentData, bubbleId: number): React.ReactElement => {
 
-        if ((chatBubbleInfo.timestamp || 0) < videoTime){
+        if ((chatBubbleInfo.timestamp || 0) <= videoTime){
             return (
                 <ChatBubble key={bubbleId} 
                     commentData={chatBubbleInfo}
                     addCommentFunc={addComment}
+                    removeCommentFunc={removeComment}
+                    updateCommentsFunc={updateComments}
                 >
                 </ChatBubble>
             )
@@ -76,12 +87,12 @@ export const ChatBox: React.FC<VideoPlayerProps> = ({
                 ))}
             </ChatListFrame>
             <NewCommentFrame>
-                <QuestionButton onClick={toggleCommenter} ><ChatBubbleOutline className={'buttonIcon'} /></QuestionButton>
+                {/* <QuestionButton onClick={toggleCommenter} ><ChatBubbleOutline className={'buttonIcon'} /></QuestionButton> */}
                 <Commenter
                     timestamp={Math.floor(videoTime) || 0}
                     parentComment={undefined}
                 
-                    isOpen={isCommenterOpen}
+                    isCommenterOpen={isCommenterOpen}
                     addCommentFunc={addComment}
                     toggleCommenterFunc={setIsCommenterOpen}
                 >
