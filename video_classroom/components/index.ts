@@ -8,3 +8,5 @@ export * from './Text';
 export * from './Counter';
 export * from './ProfileComment';
 export * from './Objects';
+export * from './UploadPanel';
+export * from './CheckBox';

@@ -74,13 +74,13 @@ const Profile: NextPage<ProfileProps> = ({
                     ) : (
                     <>  
                         <Column>
-                            <Input inputRef={refName} placeholder='Name...' />
-                            <Input inputRef={refTitle} placeholder='Title...' />
-                            <Input inputRef={refDescription} placeholder='About Me...' />
+                            <Input inputRef={refName} label="Name" placeholder='Name...' />
+                            <Input inputRef={refTitle} label="Title" placeholder='Title...' />
+                            <Input inputRef={refDescription} label="About Me" placeholder='About Me...' />
                         </Column>
                         <Column>
-                            <Input inputRef={refBirthdate} placeholder='Birthdate...' />
-                            <Input inputRef={refCourses} placeholder='Courses...' />
+                            <Input inputRef={refBirthdate} label="Birthdate" placeholder='Birthdate...' />
+                            <Input inputRef={refCourses} label="Courses" placeholder='Courses...' />
                             <Button onClick={() => updateProfile()}>Submit Changes</Button>
                         </Column>
                     </>

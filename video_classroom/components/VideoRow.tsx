@@ -6,40 +6,59 @@ import { Counter } from './Counter';
 import { HeartFill } from '@styled-icons/bootstrap/HeartFill';
 import { Edit } from '@styled-icons/boxicons-regular/Edit';
 import { MainTheme } from '../styles/MainTheme';
+import moment from "moment";
 import React from 'react';
 import styled from 'styled-components';
+import { Video } from '../components/Objects/Video';
 
 export interface VideoRowProps extends React.HTMLAttributes<HTMLDivElement> {
-    video?: any;
-    
+    video: Video;
+    removeClick: React.MouseEventHandler;
 }
 
 export const VideoRow: React.FC<VideoRowProps> = ({
+    video,
+    removeClick = () => null,
+    ...props
+}): React.ReactElement => {
+    const displayVisibility = (perms: string): string => {
+        if (perms == 'Everyone')
+            return 'Visible to everyone in class';
+        return 'Visible to TAs and instructors';
+    };
 
-}): React.ReactElement => (
-    <StyledDiv>
-        <img src='https://external-preview.redd.it/W-uPL4Yr42_zNV_FFtpOZ0pRwxjZup6_aM90LdCis6k.jpg?auto=webp&s=26f5d20887104f3b8202ed5e1747d7da51135f05' />
-        <TextContainer>
-            <TitleHeading size="h6" >Title</TitleHeading>
-            <DescriptionHeading size="small" color={MainTheme.colors.subtext} >This is an unnecessarily long description...</DescriptionHeading>
-        </TextContainer>
-        <StatusContainer>
-            <StatusHeading italic={true} size="small" color={MainTheme.status.professor} >Professor Answered</StatusHeading>
-            <StatusHeading italic={true} size="small" color={MainTheme.status.student} >Student Answered</StatusHeading>
-            <StatusHeading italic={true} size="small" color={MainTheme.status.unresolved} >Unresolved Answer(s)</StatusHeading>
-        </StatusContainer>
-        <PermissionsHeading size="small" bold={true} italic={true} >Visible to everyone in class</PermissionsHeading>
-        <Counter bold={true} icon={HeartFill} >42</Counter>
-        <Counter bold={true} icon={ChatLeft} >69</Counter>
-        <DateHeading size="small" >04/20/2021</DateHeading>
-        <Button icon={Edit} />
-        <Button icon={Close} />
-    </StyledDiv>
-);
+    return (
+        <StyledDiv {...props}>
+            <ThumbnailContainer>
+                <Thumbnail src={video.thumbnail} />
+                <TimeStamp>{video.video_len}</TimeStamp>
+            </ThumbnailContainer>
+            <TextContainer>
+                <TitleHeading size="h6" >{video.title}</TitleHeading>
+                <DescriptionHeading size="small" color={MainTheme.colors.subtext} >{video.description}</DescriptionHeading>
+            </TextContainer>
+            <StatusContainer>
+                {video.status.professor_answered && <StatusHeading italic={true} size="small" color={MainTheme.status.professor} >Professor Answered</StatusHeading>}
+                {video.status.student_answered && <StatusHeading italic={true} size="small" color={MainTheme.status.student} >Student Answered</StatusHeading>}
+                {video.status.unresolved_answers && <StatusHeading italic={true} size="small" color={MainTheme.status.unresolved} >Unresolved Answer(s)</StatusHeading>}
+            </StatusContainer>
+            <PermissionsHeading size="small" bold={true} italic={true} >{displayVisibility(video.visibility)}</PermissionsHeading>
+            <Counter bold={true} icon={HeartFill} >{video.num_likes}</Counter>
+            <Counter bold={true} icon={ChatLeft} >{video.num_comments}</Counter>
+            <DateHeading size="small" >{moment(video.date).format('MM/DD/YYYY')}</DateHeading>
+            <Button icon={Edit} />
+            <Button onClick={removeClick} icon={Close} />
+        </StyledDiv>
+    )
+};
 
 const DateHeading = styled(Heading)`
     display: flex;
     align-items: center;
+`;
+
+const DescriptionHeading = styled(Heading)`
+    margin: 0 0 0 5px;
 `;
 
 const PermissionsHeading = styled(Heading)`
@@ -63,14 +82,23 @@ const StyledDiv = styled.div`
     display: flex;
     flex-direction: row;
     height: 70px;
-    border: 1px solid black;
+    border: 1px solid ${MainTheme.colors.stroke};
     padding: 5px;
     width: 100%;
     column-gap: 20px;
+    border-radius: 5px 5px 5px 5px;
 `;
 
-const DescriptionHeading = styled(Heading)`
-    margin: 0 0 0 5px;
+const TimeStamp = styled.div`
+    position: absolute;
+    width: 40px;
+    height: 15px;
+    color: ${MainTheme.colors.input};
+    background-color: ${MainTheme.colors.video_bg};
+    right: 0px;
+    bottom: 0px;
+    text-align: center;
+    font-size: 10px;
 `;
 
 const TitleHeading = styled(Heading)`
@@ -82,6 +110,16 @@ const TextContainer = styled.div`
     flex-direction: column;
     height: 100%;
     width: 35%;
+`;
+
+const Thumbnail = styled.img`
+    width: 100%;
+    height: 100%;
+`;
+
+const ThumbnailContainer = styled.div`
+    position: relative;
+    width: 10%;
 `;
 
 export default VideoRow;
