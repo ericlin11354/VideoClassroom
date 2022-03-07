@@ -14,16 +14,19 @@ import { Upload } from '@styled-icons/boxicons-regular/Upload';
 import { PlusCircle } from '@styled-icons/bootstrap/PlusCircle';
 import Popup from './Popup';
 import LoginPanel from './LoginPanel';
-import { UserStatusProps } from './Objects';
+import { UserStatusProps, Video } from './Objects';
 import router, { useRouter } from 'next/router';
 
 export interface NavBarProps extends React.HTMLAttributes<HTMLDivElement>, UserStatusProps{
     onCourseChange?: Function;
+    // temporary implementation for adding a video due to lack of server.
+    addVideo?: Function;
 }
 
 export const NavBar: React.FC<NavBarProps> = ({
     status = 'Admin',
     onCourseChange = () => null,
+    addVideo = () => null,
 }): React.ReactElement => {
     const [isLoginOpen, setIsLoginOpen] = useState(false);
     const [isUploadOpen, setIsUploadOpen] = useState(false);
@@ -82,7 +85,7 @@ export const NavBar: React.FC<NavBarProps> = ({
             </RightContainer>
             <Popup isOpen={isLoginOpen || isUploadOpen} setIsOpenFunc={setIsLoginOpen}>
                 {isLoginOpen && <LoginPanel></LoginPanel>}
-                {isUploadOpen && <UploadPanel></UploadPanel>}
+                {isUploadOpen && <UploadPanel onSubmitClick={addVideo} />}
             </Popup>
         </Container>
     )

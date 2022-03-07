@@ -94,8 +94,8 @@ const Catalogue: NextPage<CatalogueProps> = ({
     const { cid } = router.query;
 
     // since we mutate the list of videos, we need keep track of mutated videos when filtering/searching
-    const [videos, setVideos] = useState<Video[]>(videoList);
-    const [currentVideos, setCurrentVideos] = useState<Video[]>(videos);
+    const [videos, setVideos] = useState<Video[]>([...videoList]);
+    const [currentVideos, setCurrentVideos] = useState<Video[]>([...videos]);
 
     const refFilterSort = useRef() as RefObject<HTMLSelectElement>;
     const refFilterVisibility = useRef() as RefObject<HTMLSelectElement>;
@@ -118,8 +118,8 @@ const Catalogue: NextPage<CatalogueProps> = ({
 
         temp.splice(index, 1);
         // console.log(removed);
-        setVideos(temp);
-        setCurrentVideos(temp);
+        setVideos([...temp]);
+        setCurrentVideos([...temp]);
     }
 
     const searchVideos: React.FormEventHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,10 +134,10 @@ const Catalogue: NextPage<CatalogueProps> = ({
                     newList.push(temp[i]);
                 }
             }
-            setCurrentVideos(newList);
+            setCurrentVideos([...newList]);
         }
         else {
-            setCurrentVideos(videos);
+            setCurrentVideos([...videos]);
         }
     };
 
@@ -148,22 +148,22 @@ const Catalogue: NextPage<CatalogueProps> = ({
         switch(option) {
             case 'Upload Date': {
                 temp.sort((a, b) =>  b.date.getTime() - a.date.getTime());
-                setCurrentVideos(temp);
+                setCurrentVideos([...temp]);
                 break;
             }
             case 'Total Views': {
                 temp.sort((a, b) => b.num_likes - a.num_likes);
-                setCurrentVideos(temp);
+                setCurrentVideos([...temp]);
                 break;
             }
             case 'Total Comments': {
                 temp.sort((a, b) => b.num_comments - a.num_comments);
-                setCurrentVideos(temp);
+                setCurrentVideos([...temp]);
                 break;
             }
             default: {
                 // default to 'Sort Videos'
-                setCurrentVideos(videos);
+                setCurrentVideos([...videos]);
                 break;
             }
         }
@@ -179,19 +179,26 @@ const Catalogue: NextPage<CatalogueProps> = ({
                     if (temp[i].visibility == 'TAProfs')
                         newList.push(temp[i]);
                 }
-                setCurrentVideos(newList);
+                setCurrentVideos([...newList]);
                 break;
             }
             default: {
                 // default to 'All Videos'
-                setCurrentVideos(videos);
+                setCurrentVideos([...videos]);
             }
         }
     };
 
+    const addVideo = (newVideo: Video) => {
+        const temp = [...videos];
+        temp.push(newVideo);
+        setVideos([...temp]);
+        setCurrentVideos([...temp]);
+    };
+
     return (
         <PageContainer>
-            <NavBar />
+            <NavBar addVideo={addVideo} />
             <CatalogueContainer>
                 <Filters>
                     <Input onChange={searchVideos} placeholder="Search..." icon={Search} />

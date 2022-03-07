@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { RefObject } from 'react';
 import styled from 'styled-components';
 import SmallText from './Text/SmallText';
 
 export interface CheckBoxProps extends React.HTMLAttributes<HTMLInputElement> {
     label?: string;
+    inputRef?: RefObject<HTMLInputElement>;
 };
 
 export const CheckBox: React.FC<CheckBoxProps> = ({
     label,
+    inputRef,
 }): React.ReactElement => (
     <StyledDiv>
-        <input type="checkbox"/>
+        <input ref={inputRef} type="checkbox"/>
         <SmallText>{label}</SmallText>
     </StyledDiv>
 );
