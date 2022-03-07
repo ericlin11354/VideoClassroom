@@ -1,6 +1,8 @@
 import moment from "moment"
 
-export interface CommentData {
+var globalId = 0
+
+export class CommentData {
     id: number;
     videoid: number;
 	username: string;
@@ -11,35 +13,55 @@ export interface CommentData {
 	replies: Array<CommentData>;
 	replyIDs?: Array<number>;
     likes: number;
-}
+    likedUsers: Array<string>;
+    answer?: CommentData;
+    isAnswer: boolean;
 
-var globalId = 0
+    constructor(
+        contents: string, 
+        username: string, 
+        timestamp: number, 
+        parent?: CommentData,
+        videoid?: number,
+    ){
+        this.id = globalId
+        this.videoid = videoid || -1
+        this.username = username
+        this.date = moment()
+        this.timestamp = timestamp
+        this.comment = contents
+        this.replies = []
+        this.parent = parent
+        this.likes = 0
+        this.likedUsers = []
+        this.answer = undefined
+        this.isAnswer = false
 
-export const newComment = (contents: string, 
-    username: string, 
-    timestamp: number, 
-    parent?: CommentData,
-    videoid?: number,
-): CommentData =>  {
-    globalId = globalId + 1
+        if (parent){
+            parent.replies.unshift(this)
+        }
+    }
+
+    getRootComment = (): CommentData | undefined => {
+        let rootComment = this.parent
+        if (!rootComment) return ;
+        while (rootComment.parent){
+            rootComment = rootComment.parent
+        }
     
-    const comment = {
-        id: globalId,
-        videoid: videoid || -1,
-        username,
-        date: moment(),
-        timestamp,
-        comment: contents,
-        replies: [],
-        parent,
-        likes: 0,
+        return rootComment
     }
-    if (parent){
-        parent.replies.unshift(comment)
-    }
-    return comment
 }
 
+export const getRootComment = (commentData: CommentData): CommentData | undefined => {
+    let rootComment = commentData.parent
+    if (!rootComment) return ;
+    while (rootComment.parent){
+        rootComment = rootComment.parent
+    }
+
+    return rootComment
+}
 
 
 
@@ -47,31 +69,31 @@ export const newComment = (contents: string,
 
 
 export const getTestComments = (): Array<CommentData> => {
-    const msg1: CommentData = newComment(
+    const msg1: CommentData = new CommentData(
         'i love this guy',
         'Jack',
         1, 
     )
-    const msg2: CommentData = newComment(
+    const msg2: CommentData = new CommentData(
         'i disagree',
         'Mike',
         2, 
         msg1,
     )
-    const msg3: CommentData = newComment(
+    const msg3: CommentData = new CommentData(
         'hello!!!',
         'Jane',
         2, 
         msg1,
     )
-    const msg4: CommentData = newComment(
+    const msg4: CommentData = new CommentData(
         'reported',
         'Jack',
         2, 
         msg2,
     )
 
-    const msg5: CommentData = newComment(
+    const msg5: CommentData = new CommentData(
         'can\'t we use pythag here?',
         'Jane',
         3, 
