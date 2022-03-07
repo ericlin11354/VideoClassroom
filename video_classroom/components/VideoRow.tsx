@@ -10,6 +10,7 @@ import moment from "moment";
 import React from 'react';
 import styled from 'styled-components';
 import { Video } from '../components/Objects/Video';
+import router from 'next/router';
 
 export interface VideoRowProps extends React.HTMLAttributes<HTMLDivElement> {
     video: Video;
@@ -27,9 +28,21 @@ export const VideoRow: React.FC<VideoRowProps> = ({
         return 'Visible to TAs and instructors';
     };
 
+    const moveToVideo = (e: React.MouseEvent<HTMLElement>): void => {
+        //TODO: replace hardcoding
+
+        router.replace({
+            pathname: '/video',
+            query: 
+            {
+                vid: 'cat.mp4'
+            },
+        })
+    };
+
     return (
         <StyledDiv {...props}>
-            <ThumbnailContainer>
+            <ThumbnailContainer onClick={moveToVideo} >
                 <Thumbnail src={video.thumbnail} />
                 <TimeStamp>{video.video_len}</TimeStamp>
             </ThumbnailContainer>
@@ -59,6 +72,7 @@ const DateHeading = styled(Heading)`
 
 const DescriptionHeading = styled(Heading)`
     margin: 0 0 0 5px;
+    overflow: hidden;
 `;
 
 const PermissionsHeading = styled(Heading)`
@@ -66,12 +80,14 @@ const PermissionsHeading = styled(Heading)`
     align-items: center;
     width: 10%;
     text-align: center;
+    overflow: hidden;
 `;
 
 const StatusContainer = styled.div`
     display: flex;
     flex-direction: column;
     height: 100%;
+    overflow: hidden;
 `;
 
 const StatusHeading = styled(Heading)`
