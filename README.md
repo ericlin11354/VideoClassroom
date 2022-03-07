@@ -55,4 +55,7 @@ Users can view their account information. Information includes name, title, ‘A
 
 
 Bugs and Notes:
-Deleting a video when filtering can cause videos to randomly appear.
+Deleting a video when filtering can cause videos to randomly appear. This may due to an unreliable storage of mock data.
+Selecting a class has not been implemented as its issues tie heavily with the issue above.
+Adding a class may be unsuccessful in loading the correct information due a lack of server data forcing us to receive data through multiple nested components (e.g. catalogue page -> navbar -> upload video panel).
+
