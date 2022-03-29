@@ -26,7 +26,7 @@ export const ProfileComment: React.FC<ProfileComment> = ({
             <Counter size="70%" color={MainTheme.colors.subtext} icon={ChatLeft} >4</Counter>
             <Counter size="70%" color={MainTheme.colors.subtext} icon={Like} >500</Counter>
         </CommentStats>
-        <SmallText>What is love? Baby don't hurt me.</SmallText>
+        <SmallText>What is love? Baby don&#39t hurt me.</SmallText>
     </StyledDiv>
 );
 

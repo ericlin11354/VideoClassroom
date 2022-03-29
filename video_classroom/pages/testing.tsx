@@ -7,7 +7,7 @@ import styled from "styled-components";
 import ChatBox from '../components/Video/ChatBox'
 import moment from 'moment';
 import ChatBubble, { ChatBubbleProps } from "../components/Video/ChatBubble";
-import { CommentData, getTestComments, newComment } from '../components/CommentData';
+import { CommentData, getTestComments } from '../components/CommentData';
 
 const Testing: NextPage = () => {
   return (
