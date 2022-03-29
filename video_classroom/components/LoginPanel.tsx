@@ -169,7 +169,7 @@ export const LoginPanel: React.FC<VideoPlayerProps> = ({
                     {warnMsg}
                 </Warning>
                 <span>
-                    Don't have an account? <Switcher onClick={toggleSignin}>Sign up here.</Switcher>
+                    Don&#39t have an account? <Switcher onClick={toggleSignin}>Sign up here.</Switcher>
                 </span>
             </LoginFrame>
         )

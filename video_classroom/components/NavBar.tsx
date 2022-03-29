@@ -16,6 +16,7 @@ import Popup from './Popup';
 import LoginPanel from './LoginPanel';
 import { UserStatusProps, Video } from './Objects';
 import router, { useRouter } from 'next/router';
+import { addVideoToDB } from '../scripts/video_script';
 
 export interface NavBarProps extends React.HTMLAttributes<HTMLDivElement>, UserStatusProps{
     onCourseChange?: Function;
@@ -42,6 +43,7 @@ export const NavBar: React.FC<NavBarProps> = ({
 	};
 
     const handleUploadClick = (e: React.MouseEvent<HTMLElement>) => {
+        addVideoToDB(); // FOR TESTING PURPOSES
         setIsUploadOpen(!isUploadOpen);
         setIsLoginOpen(false);
     }
