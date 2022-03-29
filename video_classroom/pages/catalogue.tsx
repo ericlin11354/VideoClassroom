@@ -105,11 +105,10 @@ const Catalogue: NextPage<CatalogueProps> = ({
         // console.log(videos);
         return (
             currentVideos.map((video, index) => 
-            ((video.visibility != 'TAProfs' && isUserLoggedIn()) || isUserAdmin()) && 
-            <VideoRow key={index} video={video} removeClick={() => removeVideo(index)}/> || <></>
+                ((video.visibility != 'TAProfs' && isUserLoggedIn()) || isUserAdmin()) && <VideoRow key={index} video={video} removeClick={() => removeVideo(index)}/>
             )
         )
-    }
+    };
 
     const removeVideo = (index: number) => {
         const temp = [...videos];
