@@ -8,6 +8,8 @@ const next = require('next')
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
+
+
     
 app.prepare()
 .then(() => {
@@ -29,6 +31,9 @@ app.prepare()
 		log('Big Chungus Amongus console')
 		res.status(500).send("Big Chungus Amongus") // REMOVE BEFORE SUBMISSION: for testing purposes only
 	})
+
+	const loginRouter = require('./routes/login');
+	server.use('/api/id', loginRouter);
 
 })
 .catch((ex) => {
