@@ -2,7 +2,8 @@ import styled from "styled-components";
 import { 
 	useState, 
     useRef, 
-    MouseEvent, 
+    MouseEvent,
+    useEffect, 
 } from "react";
 import {secToTime} from '../../helpers/timeHelper';
 import {HandThumbsUp, HandThumbsUpFill, Star, StarFill, Eye, EyeFill} from '@styled-icons/bootstrap';
@@ -49,6 +50,14 @@ export const Commenter: React.FC<CommenterProps> = ({
 }): React.ReactElement => {
     // const [isOpen, setIsOpen] = useState<boolean>(false);
 
+    const [username, setUsername] = useState<string>('');
+    const [isAdmin, setIsAdmin] = useState<Boolean>(false);
+
+    useEffect(() => {
+        setUsername(getUsername())
+        setIsAdmin(isUserAdmin())
+    })
+
 	const formRef = useRef<HTMLInputElement>(null);
 
     var formattedTS = secToTime(timestamp)
@@ -64,7 +73,7 @@ export const Commenter: React.FC<CommenterProps> = ({
 
             const newCommentData: CommentData = new CommentData(
                 newCommentContent,
-                getUsername(),
+                username,
                 timestamp,
                 parentComment,
             )
@@ -94,7 +103,7 @@ export const Commenter: React.FC<CommenterProps> = ({
         toggleRepliesFunc && toggleRepliesFunc(!isRepliesOpen)
 	}
 
-    const isLikedByUser = parentComment && parentComment.likedUsers.findIndex((element) => (getUsername() == element)) != -1
+    const isLikedByUser = parentComment && parentComment.likedUsers.findIndex((element) => (username == element)) != -1
 
     const numComments = parentComment && parentComment.replies.length || 0
 
@@ -106,8 +115,8 @@ export const Commenter: React.FC<CommenterProps> = ({
             {parentComment && <CommentButton onClick={toggleLikeFunc}>{isLikedByUser && <HandThumbsUpFill className={'buttonIcon'} /> || <HandThumbsUp className={'buttonIcon'} />}</CommentButton>}
             <NumItems>{numComments > 0 && numComments}</NumItems>
             <CommentButton onClick={toggleCommenter} ><ChatBubbleOutline className={'buttonIcon'} /></CommentButton>
-            {isUserAdmin() && parentComment && <CommentButton onClick={deleteComment} ><Delete className={'buttonIcon'} /></CommentButton>}
-            {isUserAdmin() && parentComment && parentComment.parent && <CommentButton onClick={markComment} >{questionAnswered && <StarFill className={'buttonIcon'} /> || <Star className={'buttonIcon'} />}</CommentButton>}
+            {isAdmin && parentComment && <CommentButton onClick={deleteComment} ><Delete className={'buttonIcon'} /></CommentButton>}
+            {isAdmin && parentComment && parentComment.parent && <CommentButton onClick={markComment} >{questionAnswered && <StarFill className={'buttonIcon'} /> || <Star className={'buttonIcon'} />}</CommentButton>}
             {(!parentComment || parentComment.replies.length > 0) && parentComment && <CommentButton onClick={toggleReplies} >{isRepliesOpen && <EyeFill className={'buttonIcon'} /> || <Eye className={'buttonIcon'} />}</CommentButton>}
             <CommenterContainer isOpen={isCommenterOpen} {...props}>
                 <FormBox ref={formRef}/>
