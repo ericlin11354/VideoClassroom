@@ -106,7 +106,6 @@ export const LoginPanel: React.FC<VideoPlayerProps> = ({
         
         const response = fetch(request)
         .then(async function(res) {
-            log('dasdsadad')
             if (!res.ok) {
                 notify('Invalid Login')
                 return false

@@ -19,8 +19,10 @@ export const isUserLoggedIn = (): boolean =>  {
 }
 
 export const getUsername = (): string =>  {
-    const cookies = new Cookies();
-    return cookies.get("username")
+    // const cookies = new Cookies();
+    // return cookies.get("username")
+
+    return sessionStorage.getItem('username') || ''
 }
 
 export const isUserAdmin = (): boolean =>  {

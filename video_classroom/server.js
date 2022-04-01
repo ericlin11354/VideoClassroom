@@ -32,11 +32,6 @@ app.prepare()
 		log(`Listening on port ${port}...`)
 	})
 
-	server.post('/api/catalogue', async (req, res) => {
-		log('Big Chungus Amongus console')
-		res.status(500).send("Big Chungus Amongus") // REMOVE BEFORE SUBMISSION: for testing purposes only
-	})
-
 	server.use(bodyParser.json());
 
 	server.use(session({

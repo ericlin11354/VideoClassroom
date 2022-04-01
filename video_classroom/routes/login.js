@@ -48,8 +48,6 @@ router.post('/login', mongoChecker, async (req, res) => {
 
     try {
 		const user = await User.findByUsernamePassword(username, password);
-        log('wtf')
-        log(user)
 		if (!user) {
 			res.status(404).send('Username and password combination not found')
         } else {
