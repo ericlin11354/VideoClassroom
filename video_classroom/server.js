@@ -10,6 +10,8 @@ const app = next({ dev })
 const handle = app.getRequestHandler()
 
 const bodyParser = require('body-parser')
+const { Course } = require('./models/course')
+const { mongoose } = require('./db/mongoose')
 
 
     
@@ -19,25 +21,26 @@ app.prepare()
 
 	// will use an 'environmental variable', process.env.PORT, for deployment.
 	const port = process.env.PORT || 5000
-		
-	server.get('*', (req, res) => {
-		return handle(req, res)
-	})
     
 	server.listen(port, (err) => {
 		if (err) throw err
 		log(`Listening on port ${port}...`)
 	})
 
-	server.post('/api/catalogue', async (req, res) => {
-		log('Big Chungus Amongus console')
-		res.status(500).send("Big Chungus Amongus") // REMOVE BEFORE SUBMISSION: for testing purposes only
-	})
+	// server.post('/api/catalogue', async (req, res) => {
+	// 	log('Big Chungus Amongus console')
+	// 	res.status(500).send("Big Chungus Amongus") // REMOVE BEFORE SUBMISSION: for testing purposes only
+	// })
 
 	server.use(bodyParser.json())
-
 	const loginRouter = require('./routes/login');
 	server.use('/api/id', loginRouter);
+	const catalogueRouter = require('./routes/catalogue')
+	server.use('/api/catalogue', catalogueRouter)
+
+	server.get('*', (req, res) => {
+		return handle(req, res)
+	})
 
 	// server.use(session({
 	// 	secret: 'our hardcoded secret', // later we will define the session secret as an environment variable for production. for now, we'll just hardcode it.

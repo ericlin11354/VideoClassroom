@@ -1,3 +1,5 @@
+import { CustomFile } from "./CustomFile";
+
 export interface Video {
     title: string;
     description: string;
@@ -5,8 +7,8 @@ export interface Video {
     num_comments: number;
     date: Date;
     video_len: string;
-    thumbnail: string;
-    src: string;
+    thumbnail: CustomFile;
+    src: CustomFile;
     status: {
         professor_answered?: boolean;
         student_answered?: boolean;

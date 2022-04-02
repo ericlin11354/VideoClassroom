@@ -7,8 +7,7 @@
    // Get the URI of the local database, or the one specified on deployment.
    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/VideoClassroomAPI'
    
-   mongoose.connect(mongoURI, 
-       { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true})
+   mongoose.connect(mongoURI)
        .catch((error) => { 
            console.log('Error connecting to mongodb. Timeout reached.') 
        })

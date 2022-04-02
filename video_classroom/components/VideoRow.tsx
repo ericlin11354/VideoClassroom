@@ -45,7 +45,7 @@ export const VideoRow: React.FC<VideoRowProps> = ({
     return (
         <StyledDiv {...props}>
             <ThumbnailContainer onClick={moveToVideo} >
-                <Thumbnail src={video.thumbnail} />
+                <Thumbnail src={video.thumbnail.webkitRelativePath} />
                 <TimeStamp>{video.video_len}</TimeStamp>
             </ThumbnailContainer>
             <TextContainer>

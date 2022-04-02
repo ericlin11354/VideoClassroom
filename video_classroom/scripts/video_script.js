@@ -6,31 +6,13 @@ const log = console.log
 log('Loaded front-end javascript.')
 
 // A function to send a POST request with a new video.
-export function addVideoToDB() {
+export function addVideoToDB(video) {
     // the URL for the request
-    const url = '/api/catalogue';
-
-    // The data we are going to send in our request
-    let data = { // TEMPORARY MOCK DATA
-        title: "Formal definition of a limit",
-        description: "By the end of this lesson, you will absolutely love epsilons and deltas",
-        num_comments: 69,
-        num_likes: 42,
-        date: new Date('2021-04-20'),
-        video_len: '42:00',
-        status: {
-            professor_answered: true,
-            student_answered: true,
-            unresolved_answers: true,
-        },
-        thumbnail: 'https://external-preview.redd.it/W-uPL4Yr42_zNV_FFtpOZ0pRwxjZup6_aM90LdCis6k.jpg?auto=webp&s=26f5d20887104f3b8202ed5e1747d7da51135f05',
-        src: 'cat.mp4',
-        visibility: 'Everyone',
-    }
+    const url = `/api/catalogue/`;
     // Create our request constructor with all the parameters we need
     const request = new Request(url, {
         method: 'post', 
-        body: JSON.stringify(data),
+        body: JSON.stringify(video),
         headers: {
             'Accept': 'application/json, text/plain, */*',
             'Content-Type': 'application/json'
@@ -57,6 +39,60 @@ export function addVideoToDB() {
         //     message.setAttribute("style", "color: red")
      
         // }
+        if (res.status === 200) {
+            log('Added a video')
+        } else {
+            log('Could not add video')
+        }
+        log(res)  // log the result in the console for development purposes,
+                          //  users are not expected to see this.
+    }).catch((error) => {
+        log(error)
+    })
+}
+
+export function getVideosFromDB(videoList) {
+    const url = `/api/catalogue/`;
+
+    // Since this is a GET request, simply call fetch on the URL
+    fetch(url)
+    .then(res => {
+        if (res.status === 200) {
+            // return a promise that resolves with the JSON body
+            return res.json();
+        } else {
+            console.log("Could not get videos");
+        }
+    })
+    .then(json => {
+        // // the resolved promise with the JSON body
+        // studentList.setState({ studentList: json.students });
+        console.log('json', json);
+        const setVideos = videoList[1];
+        setVideos(json.videos);
+    })
+    .catch(error => {
+        console.log(error);
+    });
+}
+
+export function removeVideoFromDB(id) {
+    const url = `/api/catalogue/${id}`;
+    const request = new Request(url, {
+        method: 'delete', 
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    });
+
+    fetch(request)
+    .then(function(res) {
+
+        if (res.status === 200) {
+            log('Successfully deleted video')
+        } else {
+            log('Could not delete video')
+        }
         log(res)  // log the result in the console for development purposes,
                           //  users are not expected to see this.
     }).catch((error) => {
