@@ -1,4 +1,5 @@
 import type { NextPage } from 'next';
+import { getVideosFromDB, removeVideoFromDB } from '../scripts/video_script';
 import { 
     Input,
     NavBar,
@@ -12,78 +13,10 @@ import { Search } from '@styled-icons/bootstrap/Search';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { isUserAdmin, isUserLoggedIn } from '../helpers/permHelper';
-
-const videoList: Video[] = [
-    {
-        title: "Formal definition of a limit",
-        description: "By the end of this lesson, you will absolutely love epsilons and deltas",
-        num_comments: 69,
-        num_likes: 42,
-        date: new Date('2021-04-20'),
-        video_len: '42:00',
-        status: {
-            professor_answered: true,
-            student_answered: true,
-            unresolved_answers: true,
-        },
-        thumbnail: 'https://external-preview.redd.it/W-uPL4Yr42_zNV_FFtpOZ0pRwxjZup6_aM90LdCis6k.jpg?auto=webp&s=26f5d20887104f3b8202ed5e1747d7da51135f05',
-        src: 'cat.mp4',
-        visibility: 'Everyone',
-    },
-    {
-        title: 'Fourier Series',
-        description: 'Wait, you re-created the Mona Lisa with a function!?',
-        num_likes: 21,
-        num_comments: 22,
-        date: new Date('2021-06-09'),
-        video_len: '6:90',
-        status: {
-            professor_answered: false,
-            student_answered: true,
-            unresolved_answers: true,
-        },
-        thumbnail: 'https://static.wikia.nocookie.net/67d15606-ebf8-46a7-bffe-1db81f6b7d6a',
-        src: 'rick.mp4',
-        visibility: 'TAProfs',
-    },
-    {
-        title: 'Speedrunning all of First-Year Derivatives',
-        description: 'There you. 1.5 months of First-year calculus right there.',
-        num_likes: 1000,
-        num_comments: 1,
-        date: new Date('2021-01-09'),
-        video_len: '12:34',
-        status: {
-            professor_answered: true,
-            student_answered: false,
-            unresolved_answers: true,
-        },
-        thumbnail: 'https://i1.sndcdn.com/artworks-Uii8SMJvNPxy8ePA-romBoQ-t500x500.jpg',
-        src: 'amongus.mp4',
-        visibility: 'Everyone',
-    }
-];
-
-const videoList2: Video[] = [
-    {
-        title: "Top 10 Javascript Betrayls [GONE WRONG] ",
-        description: "Remember to like and subscribe!",
-        num_comments: 0,
-        num_likes: 1,
-        date: new Date('2020-04-20'),
-        video_len: '100:00',
-        status: {
-            professor_answered: false,
-            student_answered: false,
-            unresolved_answers: false,
-        },
-        thumbnail: 'https://i.imgur.com/6wcAlxu.jpg',
-        src: 'pog.mp4',
-        visibility: 'Everyone',
-    }
-]
+import { LocalConvenienceStoreOutlined } from '@mui/icons-material';
 
 export interface CatalogueProps extends UserStatusProps{
+    currentCourse?: string;
 };
 
 const Catalogue: NextPage<CatalogueProps> = ({
@@ -91,11 +24,12 @@ const Catalogue: NextPage<CatalogueProps> = ({
 }) => {
 
     const router = useRouter();
-    const { cid } = router.query;
-
+    // const { cid } = router.query;
     // since we mutate the list of videos, we need keep track of mutated videos when filtering/searching
-    const [videos, setVideos] = useState<Video[]>([...videoList]);
-    const [currentVideos, setCurrentVideos] = useState<Video[]>([...videos]);
+    // console.log(getVideosFromCourse(cid))
+    const videoList = useState<Video[]>([]);
+    const [videos, setVideos] = videoList;
+    const [currentVideos, setCurrentVideos] = useState<Video[]>(videos);
 
     const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
     const [isAdmin, setIsAdmin] = useState<Boolean>(false);
@@ -108,11 +42,14 @@ const Catalogue: NextPage<CatalogueProps> = ({
     const refFilterSort = useRef() as RefObject<HTMLSelectElement>;
     const refFilterVisibility = useRef() as RefObject<HTMLSelectElement>;
 
+    useEffect(() => {
+        console.log('rerendering');
+        getVideosFromDB(videoList);
+    }, [])
+
     const displayVideos = (): React.ReactNode[] => {
-        // console.log(cid);
-        // console.log(videos);
+        console.log('displayVideos:', videos);
         return (
-            currentVideos.map((video, index) => 
                 ((video.visibility != 'TAProfs' && isLoggedIn) || isAdmin) && <VideoRow key={index} video={video} removeClick={() => removeVideo(index)}/>
             )
         )
@@ -123,6 +60,9 @@ const Catalogue: NextPage<CatalogueProps> = ({
         // const temp2 = [...currentVideos];
         // const index2 = temp2.indexOf(temp[index]);
 
+        // console.log(temp[index]);
+        const video = temp[index] as any;
+        removeVideoFromDB(video['_id']);
         temp.splice(index, 1);
         // console.log(removed);
         setVideos([...temp]);
@@ -141,10 +81,10 @@ const Catalogue: NextPage<CatalogueProps> = ({
                     newList.push(temp[i]);
                 }
             }
-            setCurrentVideos([...newList]);
+            setVideos([...newList]);
         }
         else {
-            setCurrentVideos([...videos]);
+            getVideosFromDB(videoList);
         }
     };
 

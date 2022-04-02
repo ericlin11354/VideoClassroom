@@ -32,13 +32,13 @@ export const NavBar: React.FC<NavBarProps> = ({
 }): React.ReactElement => {
     const [isLoginOpen, setIsLoginOpen] = useState(false);
     const [isUploadOpen, setIsUploadOpen] = useState(false);
-    const [currentCourses, setCurrentCourses] = useState<string[]>(['CSC309', 'MAT137']);
+    const [courses, setCourses] = useState<string[]>(['CSC309', 'MAT137']);
     const refNewCourse = useRef() as RefObject<HTMLInputElement>;
 
+    // const router = useRouter();
+    // const { cid } = router.query;
+        
     const [username, setUsername] = useState('');
-
-    const router = useRouter();
-    const { cid } = router.query;
     
     useEffect(() => {
         setUsername(getUsername())
@@ -85,7 +85,7 @@ export const NavBar: React.FC<NavBarProps> = ({
 	};
 
     const handleUploadClick = (e: React.MouseEvent<HTMLElement>) => {
-        addVideoToDB(); // FOR TESTING PURPOSES
+        // addVideoToDB(); // FOR TESTING PURPOSES
         setIsUploadOpen(!isUploadOpen);
         setIsLoginOpen(false);
     }
@@ -93,10 +93,10 @@ export const NavBar: React.FC<NavBarProps> = ({
     const addClass = () => {
         let name = refNewCourse.current?.value;
         // console.log(name);
-        if (name && name != '' && !currentCourses.includes(name)) {
-            let temp = [...currentCourses];
+        if (name && name != '' && !courses.includes(name)) {
+            let temp = [...courses];
             temp.push(name);
-            setCurrentCourses(temp);
+            setCourses(temp);
         }
     };
 
@@ -110,17 +110,17 @@ export const NavBar: React.FC<NavBarProps> = ({
             },
         })
 
-        onCourseChange();
+        // onCourseChange();
     };
 
     return(
         <Container>
             <LeftContainer>
                 <Logo src="https://assets.hongkiat.com/uploads/psd-text-svg/logo-example.jpg" />
-                <Select values={currentCourses} setSelected={changeCourse} />
-                {status == 'Admin' && <Button icon={RecordCircle}>Record</Button>}
-                <Input inputRef={refNewCourse} placeholder="Join a class..." />
-                <Button onClick={addClass} >Add Class</Button>
+                {/* <Select values={courses} setSelected={changeCourse} /> */}
+                {/* {status == 'Admin' && <Button icon={RecordCircle}>Record</Button>} */}
+                {/* <Input inputRef={refNewCourse} placeholder="Join a class..." /> */}
+                {/* <Button onClick={addClass} >Add Class</Button> */}
             </LeftContainer>
             <RightContainer>
                 {status == 'Admin' && <Button icon={Upload} onClick={handleUploadClick} />}

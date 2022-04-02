@@ -10,6 +10,8 @@ const app = next({ dev })
 const handle = app.getRequestHandler()
 
 const bodyParser = require('body-parser')
+const { Course } = require('./models/course')
+const { mongoose } = require('./db/mongoose')
 
 const { mongoose } = require('./db/mongoose')
 const session = require('express-session')
@@ -22,14 +24,19 @@ app.prepare()
 
 	// will use an 'environmental variable', process.env.PORT, for deployment.
 	const port = process.env.PORT || 5000
-		
-	server.get('*', (req, res) => {
-		return handle(req, res)
-	})
     
 	server.listen(port, (err) => {
 		if (err) throw err
 		log(`Listening on port ${port}...`)
+	})
+
+
+	server.use(bodyParser.json())
+	const catalogueRouter = require('./routes/catalogue')
+	server.use('/api/catalogue', catalogueRouter)
+
+	server.get('*', (req, res) => {
+		return handle(req, res)
 	})
 
 	server.use(bodyParser.json());
