@@ -50,6 +50,7 @@ const Catalogue: NextPage<CatalogueProps> = ({
     const displayVideos = (): React.ReactNode[] => {
         console.log('displayVideos:', videos);
         return (
+            videos.map((video, index) => 
                 ((video.visibility != 'TAProfs' && isLoggedIn) || isAdmin) && <VideoRow key={index} video={video} removeClick={() => removeVideo(index)}/>
             )
         )

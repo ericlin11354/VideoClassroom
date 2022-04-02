@@ -59,7 +59,7 @@ Body should be of the following format:
     password: string
 }
 */
-router.get('/', mongoChecker, async (req, res) => {
+router.post('/login', mongoChecker, async (req, res) => {
 	const username = req.body.username
     const password = req.body.password
 
@@ -67,8 +67,8 @@ router.get('/', mongoChecker, async (req, res) => {
         if (username === ''){
             //logout
             req.session.destroy()
-			res.status(200).send()
             res.redirect('/catalogue')
+			res.status(200).send()
         } else {
             const user = await User.findByUsernamePassword(username, password);
             if (!user) {

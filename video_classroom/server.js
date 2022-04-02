@@ -13,7 +13,6 @@ const bodyParser = require('body-parser')
 const { Course } = require('./models/course')
 const { mongoose } = require('./db/mongoose')
 
-const { mongoose } = require('./db/mongoose')
 const session = require('express-session')
 
 
