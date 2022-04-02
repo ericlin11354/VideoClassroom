@@ -13,6 +13,9 @@ const bodyParser = require('body-parser')
 const { Course } = require('./models/course')
 const { mongoose } = require('./db/mongoose')
 
+const { mongoose } = require('./db/mongoose')
+const session = require('express-session')
+
 
     
 app.prepare()
@@ -27,14 +30,8 @@ app.prepare()
 		log(`Listening on port ${port}...`)
 	})
 
-	// server.post('/api/catalogue', async (req, res) => {
-	// 	log('Big Chungus Amongus console')
-	// 	res.status(500).send("Big Chungus Amongus") // REMOVE BEFORE SUBMISSION: for testing purposes only
-	// })
 
 	server.use(bodyParser.json())
-	const loginRouter = require('./routes/login');
-	server.use('/api/id', loginRouter);
 	const catalogueRouter = require('./routes/catalogue')
 	server.use('/api/catalogue', catalogueRouter)
 
@@ -42,17 +39,22 @@ app.prepare()
 		return handle(req, res)
 	})
 
-	// server.use(session({
-	// 	secret: 'our hardcoded secret', // later we will define the session secret as an environment variable for production. for now, we'll just hardcode it.
-	// 	cookie: { // the session cookie sent, containing the session id.
-	// 		expires: 600000, // 10 minute expiry
-	// 		httpOnly: true // important: saves it in only browser's memory - not accessible by javascript (so it can't be stolen/changed by scripts!).
-	// 	},
+	server.use(bodyParser.json());
+
+	server.use(session({
+		secret: 'our hardcoded secret', // later we will define the session secret as an environment variable for production. for now, we'll just hardcode it.
+		cookie: { // the session cookie sent, containing the session id.
+			expires: 600000, // 10 minute expiry
+			httpOnly: true // important: saves it in only browser's memory - not accessible by javascript (so it can't be stolen/changed by scripts!).
+		},
 	
-	// 	// Session saving options
-	// 	saveUninitialized: false, // don't save the initial session if the session object is unmodified (for example, we didn't log in).
-	// 	resave: false, // don't resave an session that hasn't been modified.
-	// }));
+		// Session saving options
+		saveUninitialized: false, // don't save the initial session if the session object is unmodified (for example, we didn't log in).
+		resave: false, // don't resave an session that hasn't been modified.
+	}));
+	
+	const loginRouter = require('./routes/login');
+	server.use('/api/users', loginRouter);
 
 })
 .catch((ex) => {

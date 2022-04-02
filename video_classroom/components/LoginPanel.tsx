@@ -5,18 +5,12 @@ import { useRouter } from "next/router";
 import Cookies from 'universal-cookie';
 import { isUserLoggedIn } from "../helpers/permHelper";
 
-interface VideoPlayerProps {
-	knobDiam?: number;
-	defaultFracFull?: number;
-	barFillProps?: {};
-	knobProps?: {};
+const log = console.log
+
+interface LoginPanelProps {
 }
 
-export const LoginPanel: React.FC<VideoPlayerProps> = ({
-	knobDiam=10,
-	defaultFracFull=0,
-	barFillProps,
-	knobProps,
+export const LoginPanel: React.FC<LoginPanelProps> = ({
 	children,
 	...props
 }): React.ReactElement => {
@@ -48,35 +42,84 @@ export const LoginPanel: React.FC<VideoPlayerProps> = ({
         }
 	}
 
-    const createUser = (UN: string, PW: string, accessLvl: string): string => {
+    const createUser = async (UN: string, PW: string, accessLvl: string): Promise<string> => {
 		if(!checkIfValid(UN, PW)){
             return 'Username and password must contain at least 4 characters and less than 32.'
         }
         //actually create the user here
+        
+        const url = process.env.SERVER_URL + '/api/users/';
+        const data = {
+            username: UN,
+            password: PW,
+            permission: accessLvl,
+        }
+        const request = new Request(url, {
+            method: 'post', 
+            body: JSON.stringify(data),
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+        });
+        
+        const response = await fetch(request)
+        .then(function(res) {
+            if (!res.ok) {
+                const resText = res.text()
+                // console.log(resText)
+                return resText
+            }
+            
+            console.log('success')
+        }).catch((error) => {
+            console.log(error)
+        })
 
-        return ''
+        return response || ''
 	}
 
-    const loginUser = (UN: string, PW: string): string => {
-		if((UN === 'user' || UN === 'admin') && UN === PW){
+    const loginUser = (UN: string, PW: string): Promise<any> => {
 
-            //actually log in here
-            // router.replace({
-            //     pathname: router.pathname,
-            //     query: 
-            //     {
-            //         ...router.query,
-            //         username: UN,
-            //     },
-            // })
-            const cookies = new Cookies();
-            cookies.set("username", UN, {path: "/"});
-
-            // console.log(isUserLoggedIn())
-
-            return ''
+        const url = process.env.SERVER_URL + '/api/users/';
+        const data = {
+            username: UN,
+            password: PW,
         }
-        return 'Invalid credentials.'
+        const request = new Request(url, {
+            method: 'post', 
+            body: JSON.stringify(data),
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+        });
+        
+        
+        const response = fetch(request)
+        .then(async function(res) {
+            if (!res.ok) {
+                notify('Invalid Login')
+                return false
+            }
+            
+            const resBody = await res.json()
+
+            sessionStorage.setItem('username', resBody.username)
+            sessionStorage.setItem('permission', resBody.permission)
+
+            notify('Success', true)
+            window.location.reload()
+        }).catch((error) => {
+            console.log(error)
+        })
+
+        const cookies = new Cookies();
+        cookies.set("username", UN, {path: "/"});
+
+        // console.log(isUserLoggedIn())
+
+        return response
 	}
 
     const notify = (msg: string, isPositive?: boolean) => {
@@ -100,14 +143,17 @@ export const LoginPanel: React.FC<VideoPlayerProps> = ({
                     notify('The passwords don\'t match.')
                 }
 
-                const result = createUser(newUN, newPW, newUserType)
-
-                if (!(result === '')){
-                    notify(result)
-                } else {
-                    notify('Success', true)
-                    location.reload();
+                const checkSignupStatus = async () => {
+                    const result = await createUser(newUN, newPW, newUserType)
+    
+                    if (!(result === '')){
+                        notify(result)
+                    } else {
+                        notify('Success', true)
+                        // location.reload();
+                    }
                 }
+                checkSignupStatus()
             }
         } else {
             if (usernameFormRef && usernameFormRef.current &&
@@ -115,14 +161,12 @@ export const LoginPanel: React.FC<VideoPlayerProps> = ({
             ){
                 const UN = usernameFormRef.current.value
                 const PW = passwordFormRef.current.value
-                const result = loginUser(UN, PW)
 
-                if (!(result === '')){
-                    notify(result)
-                } else {
-                    notify('Success', true)
-                    location.reload();
+                const checkLoginStatus = async () => {
+                    loginUser(UN, PW)
+    
                 }
+                checkLoginStatus()
             }
         }
 	}
@@ -169,7 +213,7 @@ export const LoginPanel: React.FC<VideoPlayerProps> = ({
                     {warnMsg}
                 </Warning>
                 <span>
-                    Don&#39t have an account? <Switcher onClick={toggleSignin}>Sign up here.</Switcher>
+                    Don&#39;t have an account? <Switcher onClick={toggleSignin}>Sign up here.</Switcher>
                 </span>
             </LoginFrame>
         )

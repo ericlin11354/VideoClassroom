@@ -31,6 +31,14 @@ const Catalogue: NextPage<CatalogueProps> = ({
     const [videos, setVideos] = videoList;
     const [currentVideos, setCurrentVideos] = useState<Video[]>(videos);
 
+    const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
+    const [isAdmin, setIsAdmin] = useState<Boolean>(false);
+
+    useEffect(() => {
+        setIsLoggedIn(isUserLoggedIn())
+        setIsAdmin(isUserAdmin())
+    })
+
     const refFilterSort = useRef() as RefObject<HTMLSelectElement>;
     const refFilterVisibility = useRef() as RefObject<HTMLSelectElement>;
 
@@ -42,8 +50,7 @@ const Catalogue: NextPage<CatalogueProps> = ({
     const displayVideos = (): React.ReactNode[] => {
         console.log('displayVideos:', videos);
         return (
-            videos.map((video, index) => 
-                ((video.visibility != 'TAProfs' && isUserLoggedIn()) || isUserAdmin()) && <VideoRow key={index} video={video} removeClick={() => removeVideo(index)}/>
+                ((video.visibility != 'TAProfs' && isLoggedIn) || isAdmin) && <VideoRow key={index} video={video} removeClick={() => removeVideo(index)}/>
             )
         )
     };

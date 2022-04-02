@@ -7,7 +7,7 @@ import {
 import { Exit } from '@styled-icons/icomoon/Exit';
 import { MainTheme } from '../styles/MainTheme';
 import { PersonCircle } from '@styled-icons/bootstrap/PersonCircle';
-import React, { RefObject, useRef, useState } from 'react';
+import React, { RefObject, useEffect, useRef, useState } from 'react';
 import { RecordCircle } from '@styled-icons/bootstrap/RecordCircle';
 import styled from 'styled-components';
 import { Upload } from '@styled-icons/boxicons-regular/Upload';
@@ -17,6 +17,7 @@ import LoginPanel from './LoginPanel';
 import { UserStatusProps, Video } from './Objects';
 import router, { useRouter } from 'next/router';
 import { addVideoToDB } from '../scripts/video_script';
+import { getUsername } from '../helpers/permHelper';
 
 export interface NavBarProps extends React.HTMLAttributes<HTMLDivElement>, UserStatusProps{
     onCourseChange?: Function;
@@ -36,10 +37,51 @@ export const NavBar: React.FC<NavBarProps> = ({
 
     // const router = useRouter();
     // const { cid } = router.query;
+        
+    const [username, setUsername] = useState('');
+    
+    useEffect(() => {
+        setUsername(getUsername())
+    })
 
     const handleLoginClick = (e: React.MouseEvent<HTMLElement>) => {
-		setIsLoginOpen(!isLoginOpen);
-        setIsUploadOpen(false);
+        if (username !== ''){
+            //log out
+
+            console.log('dsad')
+
+            const url = process.env.SERVER_URL + '/api/users/';
+            const data = {
+                username: '',
+                password: '',
+            }
+            const request = new Request(url, {
+                method: 'post', 
+                body: JSON.stringify(data),
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+            });
+            
+            const response = fetch(request)
+            .then(async function(res) {
+                if (!res.ok) {
+                    return false
+                }
+    
+                sessionStorage.setItem('username', '')
+                sessionStorage.setItem('permission', '')
+                window.location.reload()
+    
+            }).catch((error) => {
+                console.log(error)
+            })
+
+        } else {
+            setIsLoginOpen(!isLoginOpen);
+            setIsUploadOpen(false);
+        }
 	};
 
     const handleUploadClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -81,14 +123,17 @@ export const NavBar: React.FC<NavBarProps> = ({
                 {/* <Button onClick={addClass} >Add Class</Button> */}
             </LeftContainer>
             <RightContainer>
-                {/* {status == 'Admin' && <Button icon={Upload} onClick={handleUploadClick} />} */}
-                {status == 'Admin' && <Button onClick={handleUploadClick} >Upload</Button>}
-                <Button icon={PersonCircle} onClick={() => window.location.replace("profile")} />
-                <Button icon={Exit} onClick={handleLoginClick}/>
+                {status == 'Admin' && <Button icon={Upload} onClick={handleUploadClick} />}
+                {
+                    username !== '' && <Button icon={PersonCircle} onClick={() => window.location.replace("profile")} />
+                }
+                <Button icon={Exit} onClick={handleLoginClick} />
             </RightContainer>
-            <Popup isOpen={isLoginOpen || isUploadOpen} setIsOpenFunc={setIsLoginOpen}>
-                {isLoginOpen && <LoginPanel></LoginPanel>}
-                {isUploadOpen && <UploadPanel />}
+            <Popup isOpen={isLoginOpen} setIsOpenFunc={setIsLoginOpen}>
+                <LoginPanel></LoginPanel>
+            </Popup>
+            <Popup isOpen={isUploadOpen} setIsOpenFunc={setIsUploadOpen}>
+                <UploadPanel onSubmitClick={addVideo} />
             </Popup>
         </Container>
     )
