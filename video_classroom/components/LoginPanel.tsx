@@ -7,18 +7,10 @@ import { isUserLoggedIn } from "../helpers/permHelper";
 
 const log = console.log
 
-interface VideoPlayerProps {
-	knobDiam?: number;
-	defaultFracFull?: number;
-	barFillProps?: {};
-	knobProps?: {};
+interface LoginPanelProps {
 }
 
-export const LoginPanel: React.FC<VideoPlayerProps> = ({
-	knobDiam=10,
-	defaultFracFull=0,
-	barFillProps,
-	knobProps,
+export const LoginPanel: React.FC<LoginPanelProps> = ({
 	children,
 	...props
 }): React.ReactElement => {
@@ -56,7 +48,7 @@ export const LoginPanel: React.FC<VideoPlayerProps> = ({
         }
         //actually create the user here
         
-        const url = process.env.SERVER_URL + '/api/id/signup';
+        const url = process.env.SERVER_URL + '/api/users/';
         const data = {
             username: UN,
             password: PW,
@@ -89,7 +81,7 @@ export const LoginPanel: React.FC<VideoPlayerProps> = ({
 
     const loginUser = (UN: string, PW: string): Promise<any> => {
 
-        const url = process.env.SERVER_URL + '/api/id/login';
+        const url = process.env.SERVER_URL + '/api/users/';
         const data = {
             username: UN,
             password: PW,
@@ -117,6 +109,7 @@ export const LoginPanel: React.FC<VideoPlayerProps> = ({
             sessionStorage.setItem('permission', resBody.permission)
 
             notify('Success', true)
+            window.location.reload()
         }).catch((error) => {
             console.log(error)
         })

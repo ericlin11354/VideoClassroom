@@ -47,7 +47,7 @@ app.prepare()
 	}));
 	
 	const loginRouter = require('./routes/login');
-	server.use('/api/id', loginRouter);
+	server.use('/api/users', loginRouter);
 
 })
 .catch((ex) => {
