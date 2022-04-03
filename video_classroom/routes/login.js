@@ -108,7 +108,7 @@ router.delete('/', mongoChecker, async (req, res) => {
                 res.status(401).send('Unauthorized to delete this user.')
             }
             const isDeletingSelf = username === user.get('username')
-            await Test.deleteOne({ _id: user.get('_id') });
+            await User.deleteOne({ _id: user.get('_id') });
 
             if (isDeletingSelf){
                 req.session.destroy()
@@ -181,6 +181,28 @@ router.get('/:username', mongoChecker, async (req, res) => {
 
             res.status(200).json(cleanedUser)
         }
+    } catch (error) {
+        log(error)
+        res.status(400).send('Bad Request')
+    }
+
+})
+
+/* 
+Get all user's info
+*/
+router.get('/', mongoChecker, async (req, res) => {
+
+    try {
+        const users = await User.find();
+
+        for (const property in users) {
+            if (property === 'password'){
+                users[property].set(property, '')
+            }
+        }
+
+        res.status(200).send(users)
     } catch (error) {
         log(error)
         res.status(400).send('Bad Request')
