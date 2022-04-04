@@ -1,3 +1,4 @@
+import { timeStamp } from "console";
 import moment from "moment"
 
 export class CommentData {
@@ -54,6 +55,8 @@ export class CommentData {
 
 export const commentsMongoToClass = (mongoComments: Array<any>): Array<CommentData> => {
     // console.log(mongoComments)
+    const questions = []
+    const answers = []
     const convertedComments = []
     for (const element of mongoComments) {
         const parentComment: any = convertedComments.find(ele => ele.id === element.parent)
@@ -68,13 +71,37 @@ export const commentsMongoToClass = (mongoComments: Array<any>): Array<CommentDa
         )
 
         newComment.date = moment(element.timePosted, 'YYYY-MM-DD HH:mm:ss')
-
-        if (parentComment) {
-            parentComment.replies.push(newComment)
+        newComment.likedUsers = element.likedBy
+        newComment.likes = element.likedBy.length
+        if (element.answer && element.answer !== ''){
+            questions.push(newComment)
+            answers.push(element.answer)
+        }
+        if (answers.includes(element._id)){
+            let question = questions[answers.indexOf(element._id)]
+            if (question){
+                question.answer = newComment
+                newComment.isAnswer = true
+            }
         }
 
-        convertedComments.push(newComment)
+        if (parentComment) {
+            // parentComment.replies.push(newComment)
+        } else {
+            convertedComments.push(newComment)
+        }
+
     }
+    
+    convertedComments.sort((a:CommentData, b:CommentData): number => {
+        if (a.timestamp === b.timestamp) {
+            return a.date.valueOf() - b.date.valueOf()
+        } else if (a.timestamp !== undefined && b.timestamp !== undefined) {
+            return a.timestamp - b.timestamp
+        } else {
+            return 0
+        }
+    })
 
     return convertedComments
 }

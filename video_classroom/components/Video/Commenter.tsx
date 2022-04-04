@@ -120,6 +120,36 @@ export const Commenter: React.FC<CommenterProps> = ({
         toggleCommenterFunc(!isCommenterOpen)
 	}
 
+    const likeComment = (e: MouseEvent<HTMLButtonElement>) => {
+
+        if (!parentComment){
+            return
+        }
+    
+        const cid = parentComment.id
+        const url = process.env.SERVER_URL + '/api/comment/like/' + cid;
+        const request = new Request(url, {
+            method: 'post',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+        });
+
+        const response = fetch(request)
+        .then(async function(res) {
+            if (res.ok) {
+                if (toggleLikeFunc){
+                    toggleLikeFunc()
+                }
+            }
+            
+        }).catch((error) => {
+            console.log(error)
+        })
+
+    }
+
     const deleteComment = (e: MouseEvent<HTMLButtonElement>) => {
     
         if (!parentComment){
@@ -139,7 +169,7 @@ export const Commenter: React.FC<CommenterProps> = ({
         const response = fetch(request)
         .then(async function(res) {
             if (res.ok) {
-                
+
                 if (parentComment && parentComment.parent) {
             
                     const index = parentComment.parent.replies.findIndex((element) => (parentComment == element))
@@ -155,7 +185,30 @@ export const Commenter: React.FC<CommenterProps> = ({
 	}
 
     const markComment = (e: MouseEvent<HTMLButtonElement>) => {
-        markCommentFunc && markCommentFunc()
+        
+        if (!parentComment){
+            return
+        }
+
+        const cid = parentComment.id
+        const url = process.env.SERVER_URL + '/api/comment/mark/' + cid;
+        const request = new Request(url, {
+            method: 'post',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+        });
+
+        const response = fetch(request)
+        .then(async function(res) {
+            if (res.ok) {
+                markCommentFunc && markCommentFunc()
+            }
+            
+        }).catch((error) => {
+            console.log(error)
+        })
 	}
 
     const toggleReplies = (e:  MouseEvent<HTMLButtonElement>) => {
@@ -171,7 +224,7 @@ export const Commenter: React.FC<CommenterProps> = ({
 	return (
         <ReplyDivider> 
             {parentComment && <NumItems>{parentComment.likes > 0 && parentComment.likes}</NumItems>}
-            {parentComment && <CommentButton onClick={toggleLikeFunc}>{isLikedByUser && <HandThumbsUpFill className={'buttonIcon'} /> || <HandThumbsUp className={'buttonIcon'} />}</CommentButton>}
+            {parentComment && <CommentButton onClick={likeComment}>{isLikedByUser && <HandThumbsUpFill className={'buttonIcon'} /> || <HandThumbsUp className={'buttonIcon'} />}</CommentButton>}
             <NumItems>{numComments > 0 && numComments}</NumItems>
             <CommentButton onClick={toggleCommenter} ><ChatBubbleOutline className={'buttonIcon'} /></CommentButton>
             {isAdmin && parentComment && <CommentButton onClick={deleteComment} ><Delete className={'buttonIcon'} /></CommentButton>}
