@@ -9,6 +9,7 @@ export interface Video {
     video_len: string;
     thumbnail: CustomFile;
     src: CustomFile;
+    _id: string;
     status: {
         professor_answered?: boolean;
         student_answered?: boolean;

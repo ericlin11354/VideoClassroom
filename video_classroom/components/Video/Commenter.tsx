@@ -16,6 +16,8 @@ export interface CommenterProps {
 	timestamp?: number;
     parentComment?: CommentData;
 
+    vid: string,
+
     addCommentFunc: (newElement: CommentData) => void;
     isCommenterOpen?: boolean;
     toggleCommenterFunc: (target: boolean) => void;
@@ -32,6 +34,8 @@ export interface CommenterProps {
 export const Commenter: React.FC<CommenterProps> = ({
 	timestamp=1,
     parentComment,
+
+    vid,
 
     addCommentFunc,
     isCommenterOpen=false,
@@ -71,13 +75,42 @@ export const Commenter: React.FC<CommenterProps> = ({
                 return
             }
 
-            const newCommentData: CommentData = new CommentData(
-                newCommentContent,
-                username,
-                timestamp,
-                parentComment,
-            )
-            addCommentFunc(newCommentData)
+            const data = {
+                body: newCommentContent,
+                user: username,
+                timeStamp: timestamp,
+                parent: parentComment && parentComment.id,
+            }
+        
+            const url = process.env.SERVER_URL + '/api/comment/' + vid;
+            const request = new Request(url, {
+                method: 'post',
+                body: JSON.stringify(data),
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+            });
+
+            const response = fetch(request)
+            .then(async function(res) {
+                if (res.ok) {
+                    const resBody = await res.json()
+        
+                    const newCommentData: CommentData = new CommentData(
+                        newCommentContent,
+                        username,
+                        timestamp,
+                        parentComment,
+                        vid,
+                        resBody._id,
+                    )
+                    addCommentFunc(newCommentData)
+                }
+                
+            }).catch((error) => {
+                console.log(error)
+            })
 
             form.value = ''
         }
@@ -88,11 +121,37 @@ export const Commenter: React.FC<CommenterProps> = ({
 	}
 
     const deleteComment = (e: MouseEvent<HTMLButtonElement>) => {
-        if (parentComment && parentComment.parent) {
-            const index = parentComment.parent.replies.findIndex((element) => (parentComment == element))
-            parentComment.parent.replies.splice(index, 1)
+    
+        if (!parentComment){
+            return
         }
-        deleteCommentFunc && deleteCommentFunc()
+
+        const cid = parentComment.id
+        const url = process.env.SERVER_URL + '/api/comment/' + cid;
+        const request = new Request(url, {
+            method: 'delete',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+        });
+
+        const response = fetch(request)
+        .then(async function(res) {
+            if (res.ok) {
+                
+                if (parentComment && parentComment.parent) {
+            
+                    const index = parentComment.parent.replies.findIndex((element) => (parentComment == element))
+                    parentComment.parent.replies.splice(index, 1)
+                }
+                deleteCommentFunc && deleteCommentFunc()
+
+            }
+            
+        }).catch((error) => {
+            console.log(error)
+        })
 	}
 
     const markComment = (e: MouseEvent<HTMLButtonElement>) => {

@@ -1,10 +1,8 @@
 import moment from "moment"
 
-var globalId = 0
-
 export class CommentData {
-    id: number;
-    videoid: number;
+    id: string;
+    videoid: string;
 	username: string;
 	date: moment.Moment;
 	timestamp?: number;
@@ -22,10 +20,11 @@ export class CommentData {
         username: string, 
         timestamp: number, 
         parent?: CommentData,
-        videoid?: number,
+        videoid?: string,
+        id?: string,
     ){
-        this.id = globalId
-        this.videoid = videoid || -1
+        this.id = id || '0'
+        this.videoid = videoid || '0'
         this.username = username
         this.date = moment()
         this.timestamp = timestamp
@@ -51,6 +50,33 @@ export class CommentData {
     
         return rootComment
     }
+}
+
+export const commentsMongoToClass = (mongoComments: Array<any>): Array<CommentData> => {
+    // console.log(mongoComments)
+    const convertedComments = []
+    for (const element of mongoComments) {
+        const parentComment: any = convertedComments.find(ele => ele.id === element.parent)
+
+        const newComment = new CommentData(
+            element.body,
+            element.user,
+            element.timeStamp,
+            parentComment,
+            element.video,
+            element._id,
+        )
+
+        newComment.date = moment(element.timePosted, 'YYYY-MM-DD HH:mm:ss')
+
+        if (parentComment) {
+            parentComment.replies.push(newComment)
+        }
+
+        convertedComments.push(newComment)
+    }
+
+    return convertedComments
 }
 
 export const getRootComment = (commentData: CommentData): CommentData | undefined => {

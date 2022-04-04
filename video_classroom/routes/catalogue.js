@@ -67,6 +67,28 @@ router.get('/', async (req, res) => {
 	}
 })
 
+//get one video
+router.get('/:id', async (req, res) => {
+	const id = req.params.id
+	
+	// check mongoose connection established.
+	if (mongoose.connection.readyState != 1) {
+		log('Issue with mongoose connection')
+		res.status(500).send('Internal server error')
+		return;
+	} 
+
+	try {
+		const video = await Video.findById(id)
+		res.send({
+			video: video
+		})
+	} catch(error) {
+		log(error)
+		res.status(500).send("Internal Server Error")
+	}
+})
+
 router.post('/:id/', async (req, res) => {
 	// req.params has the wildcard parameters in the url, in this case, id.
 	const id = req.params.id

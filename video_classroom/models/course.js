@@ -18,6 +18,7 @@ const VideoSchema = mongoose.Schema({
     thumbnail: { type: Object },
     src: { type: Object },
     visibility: { type: String },
+    comments: { type: [String] },
 });
 
 const CourseSchema = mongoose.Schema({
