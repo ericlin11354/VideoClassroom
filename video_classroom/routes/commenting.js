@@ -35,7 +35,7 @@ router.post('/:id', mongoChecker, async (req, res) => {
     const vid = req.params.id
 
     let username = req.session.username
-    username = 'frootloopers2'
+    
     // log(req.body.username)
     if (!username || username === ''){
         res.status(401).send('Must be logged in to comment')
@@ -158,7 +158,6 @@ router.delete('/:id', mongoChecker, async (req, res) => {
     const cid = req.params.id
 
     let username = req.session.username
-    username = 'frootloopers2'
 
     try {
         const user = await User.findUser(username);
@@ -219,7 +218,6 @@ router.post('/like/:id', mongoChecker, async (req, res) => {
     const cid = req.params.id
 
     let username = req.session.username
-    username = 'frootloopers2'
 
     try {
         const user = await User.findUser(username);
@@ -262,7 +260,6 @@ router.post('/mark/:id', mongoChecker, async (req, res) => {
     const cid = req.params.id
 
     let username = req.session.username
-    username = 'frootloopers2'
 
     try {
         const user = await User.findUser(username);
