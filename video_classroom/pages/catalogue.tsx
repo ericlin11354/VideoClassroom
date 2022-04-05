@@ -15,6 +15,8 @@ import { useRouter } from 'next/router';
 import { isUserAdmin, isUserLoggedIn } from '../helpers/permHelper';
 import { LocalConvenienceStoreOutlined } from '@mui/icons-material';
 
+const log = console.log
+
 export interface CatalogueProps extends UserStatusProps{
     currentCourse?: string;
 };
@@ -30,9 +32,14 @@ const Catalogue: NextPage<CatalogueProps> = ({
     const videoList = useState<Video[]>([]);
     const [videos, setVideos] = videoList;
     const [currentVideos, setCurrentVideos] = useState<Video[]>(videos);
+    const [displayedVideos, setDisplayedVideos] = useState<Video[]>(videos);
 
     const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
     const [isAdmin, setIsAdmin] = useState<Boolean>(false);
+    
+    const [searchTerm, setSearchTerm] = useState<string>('');
+    const [sortTerm, setSortTerm] = useState<string>('');
+    const [filterTerm, setFilterTerm] = useState<string>('');
 
     useEffect(() => {
         setIsLoggedIn(isUserLoggedIn())
@@ -43,14 +50,20 @@ const Catalogue: NextPage<CatalogueProps> = ({
     const refFilterVisibility = useRef() as RefObject<HTMLSelectElement>;
 
     useEffect(() => {
-        // console.log('rerendering');
+        let filteredVideos = searchVideos(searchTerm, videos)
+        filteredVideos = sortVideos(sortTerm, filteredVideos)
+        filteredVideos = filterVideos(filterTerm, filteredVideos)
+        setDisplayedVideos([...filteredVideos])
+    }, [searchTerm, sortTerm, filterTerm, isLoggedIn, isAdmin, videos])
+    
+    useEffect(() => {
         getVideosFromDB(videoList);
-    }, [])
+    }, [isLoggedIn, isAdmin])
 
     const displayVideos = (): React.ReactNode[] => {
         // console.log('displayVideos:', videos);
         return (
-            videos.map((video, index) => 
+            displayedVideos.map((video, index) => 
                 ((video.visibility != 'TAProfs' && isLoggedIn) || isAdmin) && <VideoRow key={index} video={video} removeClick={() => removeVideo(index)}/>
             )
         )
@@ -71,56 +84,65 @@ const Catalogue: NextPage<CatalogueProps> = ({
         setCurrentVideos([...temp]);
     }
 
-    const searchVideos: React.FormEventHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const searchTitle = event.target.value;
+    const searchVideos = (searchTitle: string, videoList: any) => {
         // console.log(searchTitle);
 
         if (searchTitle != '') {
-            const temp = [...videos];
+            const temp = [...videoList];
             const newList = []
             for (let i=0; i<temp.length; i++) {
                 if (temp[i].title.toLowerCase().includes(searchTitle.toLowerCase())) {
                     newList.push(temp[i]);
                 }
             }
-            setVideos([...newList]);
+
+            return newList
         }
         else {
-            getVideosFromDB(videoList);
+            return videoList
+            // setDisplayedVideos([...displayedVideos]);
         }
     };
+    const handleSearchVideos: React.FormEventHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const searchTitle = event.target.value;
+        setSearchTerm(searchTitle)
+    };
 
-    const sortVideos: React.MouseEventHandler<HTMLSelectElement> = (event: React.MouseEvent<HTMLSelectElement>) => {
-        const option = event.currentTarget.value;
+    const sortVideos = (option: string, videoList: any) => {
         // console.log(option);
-        const temp = [...currentVideos];
+        const temp = [...videoList];
         switch(option) {
             case 'Upload Date': {
-                temp.sort((a, b) =>  b.date.getTime() - a.date.getTime());
-                setCurrentVideos([...temp]);
+                temp.sort((a, b) =>  b.date.valueOf() - a.date.valueOf());
+                // setDisplayedVideos([...temp]);
                 break;
             }
-            case 'Total Views': {
-                temp.sort((a, b) => b.num_likes - a.num_likes);
-                setCurrentVideos([...temp]);
-                break;
-            }
+            // case 'Total Views': {
+            //     temp.sort((a, b) => b.num_likes - a.num_likes);
+            //     // setDisplayedVideos([...temp]);
+            //     break;
+            // }
             case 'Total Comments': {
                 temp.sort((a, b) => b.num_comments - a.num_comments);
-                setCurrentVideos([...temp]);
+                // setDisplayedVideos([...temp]);
                 break;
             }
             default: {
                 // default to 'Sort Videos'
-                setCurrentVideos([...videos]);
-                break;
+                // setDisplayedVideos([...videos]);
+                return videoList
             }
         }
+        
+        return temp
     }
-
-    const filterVideos: React.MouseEventHandler<HTMLSelectElement> = (event: React.MouseEvent<HTMLSelectElement>) => {
+    const handleSortVideos: React.MouseEventHandler<HTMLSelectElement> = (event: React.MouseEvent<HTMLSelectElement>) => {
         const option = event.currentTarget.value;
-        const temp = [...currentVideos];
+        setSortTerm(option)
+    };
+
+    const filterVideos = (option: string, videoList: any) => {
+        const temp = [...videoList];
         const newList = [];
         switch(option) {
             case 'TAProfs': {
@@ -128,14 +150,19 @@ const Catalogue: NextPage<CatalogueProps> = ({
                     if (temp[i].visibility == 'TAProfs')
                         newList.push(temp[i]);
                 }
-                setCurrentVideos([...newList]);
-                break;
+                // setDisplayedVideos([...newList]);
+                return newList
             }
             default: {
                 // default to 'All Videos'
-                setCurrentVideos([...videos]);
+                // setDisplayedVideos([...videos]);
+                return videoList
             }
         }
+    };
+    const handleFilterVideos: React.MouseEventHandler<HTMLSelectElement> = (event: React.MouseEvent<HTMLSelectElement>) => {
+        const option = event.currentTarget.value;
+        setFilterTerm(option)
     };
 
     const addVideo = (newVideo: Video) => {
@@ -150,9 +177,9 @@ const Catalogue: NextPage<CatalogueProps> = ({
             <NavBar addVideo={addVideo} />
             <CatalogueContainer>
                 <Filters>
-                    <Input onChange={searchVideos} placeholder="Search..." icon={Search} />
-                    <Select selectRef={refFilterSort} values={['Sort Videos', 'Upload Date', 'Total Views', 'Total Comments']} onClick={sortVideos}/>
-                    <Select selectRef={refFilterVisibility} values={['All Videos', 'TAProfs']} onClick={filterVideos} />
+                    <Input onChange={handleSearchVideos} placeholder="Search..." icon={Search} />
+                    <Select selectRef={refFilterSort} values={['Sort Videos', 'Upload Date', 'Total Comments']} onClick={handleSortVideos}/>
+                    <Select selectRef={refFilterVisibility} values={['All Videos', 'TAProfs']} onClick={handleFilterVideos} />
                 </Filters>
                 <VideoList>
                     {displayVideos()}
@@ -195,6 +222,7 @@ const PageContainer = styled.div`
     overflow-y: scroll;
     flex-direction: column;
     align-items: center;
+    min-width: 800px;
     height: 100%;
     width: 100%;
 `;

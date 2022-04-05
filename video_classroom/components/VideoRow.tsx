@@ -87,7 +87,7 @@ export const VideoRow: React.FC<VideoRowProps> = ({
                     {video.status.unresolved_answers && <StatusHeading italic={true} size="small" color={MainTheme.status.unresolved} >Unresolved Answer(s)</StatusHeading>}
                 </StatusContainer>
                 <PermissionsHeading size="small" bold={true} italic={true} >{displayVisibility(video.visibility)}</PermissionsHeading>
-                <Counter bold={true} icon={Eye} >{video.num_likes}</Counter>
+                {/* <Counter bold={true} icon={Eye} >{video.num_likes}</Counter> */}
                 <Counter bold={true} icon={ChatLeft} >{video.num_comments}</Counter>
                 <DateHeading size="small" >{moment(video.date).format('MM/DD/YYYY')}</DateHeading>
                 {isUserAdmin() && <StyledButton tip='Edit Video' icon={Edit} onClick={() => setIsEditing(true)} />}

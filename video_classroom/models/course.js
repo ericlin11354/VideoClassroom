@@ -28,6 +28,17 @@ const CourseSchema = mongoose.Schema({
 });
 
 
+// VideoSchema.pre('get', function(next) {
+// 	const video = this;
+
+//     console.log(this._id)
+
+// 	video.num_comments = Comment.findByVideo(this._id).length
+//     console.log(video.num_comments)
+//     next()
+// })
+
+
 const Course = mongoose.model('Course', CourseSchema)
 const Video = mongoose.model('Video', VideoSchema)
 
