@@ -55,6 +55,7 @@ app.prepare()
 	server.use('/api/comment', commentRouter)
 
 	server.get('*', (req, res) => {
+		// console.log('caught in default')
 		return handle(req, res)
 	})
 })

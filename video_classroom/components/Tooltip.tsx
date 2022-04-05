@@ -24,7 +24,7 @@ export const Tooltip: React.FC<draggableBarProps> = ({
 
     const handleMouseOver = (e: React.MouseEvent<HTMLElement>): void => {
         setIsEngaged(true)
-        console.log('sadasdas')
+        // console.log('sadasdas')
     };
 
     const handleMouseAway = (e: React.MouseEvent<HTMLElement>): void => {

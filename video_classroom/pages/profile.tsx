@@ -28,7 +28,7 @@ const Person = {
 
 const Profile: NextPage<ProfileProps> = ({
     status = 'Admin',
-}) => {
+}): React.ReactElement => {
     const [isEditing, setIsEditing] = useState(false);
     const [name, setName] = useState(Person.name);
     const [title, setTitle] = useState(Person.title);

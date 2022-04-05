@@ -42,7 +42,7 @@ export const UploadPanel: React.FC<UploadPanelProps> = ({
             console.log('Adding Video to DB');
             setStatusText('Success! Refresh to see changes.');
             setIsInputValid(true);
-            addVideoToDB(refTitle.current?.innerText, refDesc.current?.value, refVisibility.current?.checked, e.target);
+            addVideoToDB(refTitle.current?.value, refDesc.current?.value, refVisibility.current?.checked, e.target);
             // window.location.replace("catalogue");
         }
     }
