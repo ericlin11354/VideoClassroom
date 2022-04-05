@@ -75,13 +75,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         if (vidRef && vidRef.current){
             const video = vidRef.current
 
-            if (videoPlaying){
-                video.play()
-            } else {
-                video.pause()
-            }
+            // if (videoPlaying){
+            //     video.play()
+            // } else {
+            //     video.pause()
+            // }
 
-            video.volume = volume
+            setVolume(video.volume)
 
             setVideoMaxTime(video.duration)
 
@@ -114,12 +114,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         <VideoChatDescFrame>
             <VideoChatFrame>
                 <VideoPlayerFrame>
-                    <VideoViewport ref={vidRef} width="100%" height="100%">
+                    <VideoViewport ref={vidRef} width="100%" height="100%" controls>
                         {videoData && <source src={videoData.video_url} type="video/mp4"></source>}
                     </VideoViewport>
-                    <VideoBarContainer>
+                    {/* <VideoBarContainer>
                         <VideoBar videoInfo={videoInfo}></VideoBar>
-                    </VideoBarContainer>
+                    </VideoBarContainer> */}
                 </VideoPlayerFrame>
                 <ChatFrame>
                     <ChatBox videoid={vid} videoTime={videoTime}>
