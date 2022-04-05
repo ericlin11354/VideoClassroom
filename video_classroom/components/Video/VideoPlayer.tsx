@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import VideoBar from './VideoBar';
 import ChatBox from "./ChatBox";
-import { getTestComments } from "../CommentData";
+import { CommentData, getTestComments } from "../CommentData";
 import moment from "moment";
 
 interface VideoPlayerProps {
@@ -23,11 +23,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 	...props
 }): React.ReactElement => {
 
+    const vidSrc = 'cat.mp4'
+
     const [videoTime, setVideoTime] = useState<number>(0);
     const [videoMaxTime, setVideoMaxTime] = useState<number>(0);
     const [videoReady, setVideoReady] = useState<boolean>(false);
     const [videoPlaying, setVideoPlaying] = useState<boolean>(false);
-
+    
     const [volume, setVolume] = useState<number>(0);
 
 	const setVideoProgress = (vidProg: number, dontUpdateVid?: boolean) => {
@@ -88,14 +90,14 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             <VideoChatFrame>
                 <VideoPlayerFrame>
                     <VideoViewport ref={vidRef} width="100%" height="100%">
-                        <source src={vid} type="video/mp4"></source>
+                        <source src={vidSrc} type="video/mp4"></source>
                     </VideoViewport>
                     <VideoBarContainer>
                         <VideoBar videoInfo={videoInfo}></VideoBar>
                     </VideoBarContainer>
                 </VideoPlayerFrame>
                 <ChatFrame>
-                    <ChatBox videoid={vid} videoTime={videoTime} MsgList={getTestComments()}>
+                    <ChatBox videoid={vid} videoTime={videoTime}>
                     </ChatBox>
                 </ChatFrame>
             </VideoChatFrame>

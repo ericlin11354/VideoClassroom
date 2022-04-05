@@ -1,6 +1,7 @@
 import React, { ForwardRefExoticComponent, RefAttributes } from 'react';
 import styled from 'styled-components';
 import { MainTheme } from '../styles/MainTheme';
+import Tooltip from './Tooltip';
 
 export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
     icon?: React.ForwardRefExoticComponent<React.RefAttributes<SVGSVGElement>>;
@@ -8,6 +9,7 @@ export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
     contentColor?: string;
     iconSize?: string;
     onClick?: React.MouseEventHandler;
+    tip?: string;
 }
 
 interface IconProps {
@@ -22,22 +24,43 @@ export const Button: React.FC<ButtonProps> = ({
     contentColor = 'black',
     iconSize = '14px',
     children,
+    tip = 'Hello World',
     ...props
 }): React.ReactElement => (
-    <StyledButton 
-        color={color} 
-        contentColor={contentColor} 
-        {...props} >
-            {icon && (
-                <Icon
-                    iconSize={iconSize}
-                    as={icon}
-                    hasChildren={!!children}
-                />
-            )}
-            {children}
-    </StyledButton>
+        <StyledButton 
+            color={color} 
+            contentColor={contentColor}
+            {...props} >
+            <WrapperWrapper>
+                <Wrapper>
+                    {icon && (
+                        <Icon
+                            iconSize={iconSize}
+                            as={icon}
+                            hasChildren={!!children}
+                        />
+                    )}
+                    {children}
+                </Wrapper>
+            </WrapperWrapper>
+            <Tooltip tip={tip}>
+            </Tooltip>
+        </StyledButton>
 );
+
+const WrapperWrapper = styled.div`
+    width: 100%;
+    height: 100%;
+    padding: ${MainTheme.dimensions.padding.withBorder};
+`
+
+const Wrapper = styled.div`
+    margin: 0;
+    position: relative;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+`
 
 const StyledButton = styled.button<ButtonProps>`
     ${({ color, contentColor }) => `
@@ -47,14 +70,14 @@ const StyledButton = styled.button<ButtonProps>`
     justify-content: center;
     align-items: center;
     font-weight: bold;
-    overflow: hidden;
+    // overflow: hidden;
     cursor: pointer;
     outline: none;
     position: relative;
     border: 1.5px solid rgba(0,0,0,0.1);
     border-radius: 999px;
     font-size: 0.95rem;
-    padding: ${MainTheme.dimensions.padding.withBorder};
+    padding: 0px;
 `;
 
 const Icon = styled.svg<IconProps>`
