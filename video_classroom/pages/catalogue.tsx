@@ -43,12 +43,12 @@ const Catalogue: NextPage<CatalogueProps> = ({
     const refFilterVisibility = useRef() as RefObject<HTMLSelectElement>;
 
     useEffect(() => {
-        console.log('rerendering');
+        // console.log('rerendering');
         getVideosFromDB(videoList);
     }, [])
 
     const displayVideos = (): React.ReactNode[] => {
-        console.log('displayVideos:', videos);
+        // console.log('displayVideos:', videos);
         return (
             videos.map((video, index) => 
                 ((video.visibility != 'TAProfs' && isLoggedIn) || isAdmin) && <VideoRow key={index} video={video} removeClick={() => removeVideo(index)}/>
@@ -63,7 +63,8 @@ const Catalogue: NextPage<CatalogueProps> = ({
 
         // console.log(temp[index]);
         const video = temp[index] as any;
-        removeVideoFromDB(video['_id']);
+        console.log('removing', video['video_id']);
+        removeVideoFromDB(video['video_id']);
         temp.splice(index, 1);
         // console.log(removed);
         setVideos([...temp]);
@@ -168,6 +169,17 @@ const CatalogueContainer = styled.div`
     width: 80%;
     margin: 100px 0 0 10px;
     height: 100%;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+        background-color: #efefef;
+
+        &-thumb {
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 999px;
+        }
+    }
 `;
 
 const Filters = styled.div`

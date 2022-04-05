@@ -116,14 +116,14 @@ export const NavBar: React.FC<NavBarProps> = ({
     return(
         <Container>
             <LeftContainer>
-                <Logo src="https://assets.hongkiat.com/uploads/psd-text-svg/logo-example.jpg" />
+                <Logo src="https://assets.hongkiat.com/uploads/psd-text-svg/logo-example.jpg" onClick={() => window.location.replace("catalogue")}/>
                 {/* <Select values={courses} setSelected={changeCourse} /> */}
                 {/* {status == 'Admin' && <Button icon={RecordCircle}>Record</Button>} */}
                 {/* <Input inputRef={refNewCourse} placeholder="Join a class..." /> */}
                 {/* <Button onClick={addClass} >Add Class</Button> */}
             </LeftContainer>
             <RightContainer>
-                {isAdmin && <Button tip={'Upload Video'} icon={Upload} onClick={handleUploadClick} />}
+                { username !== '' && status === 'Admin' && <Button icon={Upload} onClick={handleUploadClick} />}
                 {
                     username !== '' && <Button tip={'View Profile'} icon={PersonCircle} onClick={() => window.location.replace("profile")} />
                 }
@@ -133,7 +133,7 @@ export const NavBar: React.FC<NavBarProps> = ({
                 <LoginPanel></LoginPanel>
             </Popup>
             <Popup isOpen={isUploadOpen} setIsOpenFunc={setIsUploadOpen}>
-                <UploadPanel onSubmitClick={addVideo} />
+                <UploadPanel />
             </Popup>
         </Container>
     )
@@ -159,6 +159,7 @@ const LeftContainer = styled.div`
 
 const Logo = styled.img`
     height: 100%;
+    cursor: pointer;
 `;
 
 const RightContainer = styled.div`

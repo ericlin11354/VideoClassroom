@@ -42,10 +42,13 @@ export const VideoRow: React.FC<VideoRowProps> = ({
         })
     };
 
+    const getThumbnail = () => 
+        video.video_url.slice(0, video.video_url.lastIndexOf('.')) + '.png';
+
     return (
         <StyledDiv {...props}>
             <ThumbnailContainer onClick={moveToVideo} >
-                <Thumbnail src={video.thumbnail.webkitRelativePath} />
+                <Thumbnail src={getThumbnail()} />
                 <TimeStamp>{video.video_len}</TimeStamp>
             </ThumbnailContainer>
             <TextContainer>
