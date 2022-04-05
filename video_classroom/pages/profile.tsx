@@ -8,10 +8,11 @@ import {
     NavBar,
     UserStatusProps,
     Video,
+    SmallText,
 } from '../components';
 import { MainTheme } from '../styles/MainTheme';
 import type { NextPage } from 'next';
-import React, { RefObject, useEffect, useRef, useState } from 'react';
+import React, { FormEvent, RefObject, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { CommentData, commentsMongoToClass } from '../components/CommentData';
@@ -111,10 +112,11 @@ const Profile: NextPage<ProfileProps> = ({
     const refDescription = useRef() as RefObject<HTMLInputElement>;
     const refBirthdate = useRef() as RefObject<HTMLInputElement>;
     const refCourses = useRef() as RefObject<HTMLInputElement>;
+    const refSRC = useRef() as RefObject<HTMLInputElement>;
 
     const canEdit = username && sessionStorage.getItem('username') === username
 
-    const updateProfile = (): void => {
+    const updateProfile = (e: FormEvent<HTMLFormElement>): void => {
         // setName(refName.current?.value ? refName.current.value : Person.name);
         // setTitle(refTitle.current?.value ? refTitle.current.value : Person.title);
         // setDescription(refDescription.current?.value ? refDescription.current.value : Person.description);
@@ -122,27 +124,34 @@ const Profile: NextPage<ProfileProps> = ({
         // setCourses(refCourses.current?.value ? refCourses.current.value : Person.courses);
         setIsEditing(false);
 
-        const data = {
-            name: refName.current?.value || '',
-            title: refTitle.current?.value || '',
-            description: refDescription.current?.value || '',
-            birthdate: refBirthdate.current?.value || '',
-            // courses: refDescription.current?.value || '',
-        }
+        const url = process.env.SERVER_URL + '/api/users/edit/';
+
+        const data = new FormData(e.target as HTMLFormElement)
+        data.append('name', refName.current?.value || '')
+        data.append('title', refTitle.current?.value || '')
+        data.append('description', refDescription.current?.value || '')
+        data.append('birthdate', refBirthdate.current?.value || '')
+
+        // const data = {
+        //     name: refName.current?.value || '',
+        //     title: refTitle.current?.value || '',
+        //     description: refDescription.current?.value || '',
+        //     birthdate: refBirthdate.current?.value || '',
+        //     // courses: refDescription.current?.value || '',
+        // }
 
         // console.log(data)
 
-        const url = process.env.SERVER_URL + '/api/users/edit/';
         const request = new Request(url, {
             method: 'post', 
-            body: JSON.stringify(data),
-            headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json'
-            },
+            body: data,
+            // headers: {
+            //     'Accept': 'application/json, text/plain, */*',
+            //     'Content-Type': 'application/json'
+            // },
         });
         
-        const response = fetch(request)
+        fetch(request)
         .then(async function(res) {
 
             if (!res.ok) {
@@ -150,7 +159,7 @@ const Profile: NextPage<ProfileProps> = ({
                 return false
             }
 
-            const resBody = await res.json()
+            await res.json()
 
             getUserData()
 
@@ -163,36 +172,38 @@ const Profile: NextPage<ProfileProps> = ({
         <PageContainer>
             <NavBar />
             <ProfileContainer>
-                <ProfilePicture src="https://external-preview.redd.it/W-uPL4Yr42_zNV_FFtpOZ0pRwxjZup6_aM90LdCis6k.jpg?auto=webp&s=26f5d20887104f3b8202ed5e1747d7da51135f05" />
+                <ProfilePicture src={userData.image_url} />
+                {!isEditing ? (
                 <ProfileInfo>
-                    {!isEditing ? (
-                    <>
-                        <Column>
-                            <Name bold={true} size="h3">{userData.name || ''}</Name>
-                            <Title bold={true} size="h6" color={MainTheme.colors.text} >{userData.title || ''}</Title>
-                            <Heading size="small" >{userData.description || ''}</Heading>
-                        </Column>
-                        <Column>
-                            <LabelText label="Birthdate" >{userData.birthdate || ''}</LabelText>
-                            {/* <LabelText label="Reviews" >{userData.reviews}</LabelText> */}
-                            {/* <LabelText label="Past Courses">{userData.courses}</LabelText> */}
-                        </Column>
-                    </>
-                    ) : (
-                    <>  
-                        <Column>
-                            <Input inputRef={refName} label="Name" placeholder='Name...' />
-                            <Input inputRef={refTitle} label="Title" placeholder='Title...' />
-                            <Input inputRef={refDescription} label="About Me" placeholder='About Me...' />
-                        </Column>
-                        <Column>
-                            <Input inputRef={refBirthdate} label="Birthdate" placeholder='Birthdate...' />
-                            {/* <Input inputRef={refCourses} label="Courses" placeholder='Courses...' /> */}
-                            <Button onClick={() => updateProfile()}>Submit Changes</Button>
-                        </Column>
-                    </>
-                    )}
+                    <Column>
+                        <Name bold={true} size="h3">{userData.name || ''}</Name>
+                        <Title bold={true} size="h6" color={MainTheme.colors.text} >{userData.title || ''}</Title>
+                        <Heading size="small" >{userData.description || ''}</Heading>
+                    </Column>
+                    <Column>
+                        <LabelText label="Birthdate" >{userData.birthdate || ''}</LabelText>
+                        {/* <LabelText label="Reviews" >{userData.reviews}</LabelText> */}
+                        {/* <LabelText label="Past Courses">{userData.courses}</LabelText> */}
+                    </Column>
                 </ProfileInfo>
+                ) : (
+                <ProfileInfo>
+                    <Column>
+                        <Input inputRef={refName} label="Name" placeholder='Name...' />
+                        <Input inputRef={refTitle} label="Title" placeholder='Title...' />
+                        <Input inputRef={refDescription} label="About Me" placeholder='About Me...' />
+                    </Column>
+                    <Column>
+                        <Input inputRef={refBirthdate} label="Birthdate" placeholder='Birthdate...' />
+                        {/* <Input inputRef={refCourses} label="Courses" placeholder='Courses...' /> */}
+                    </Column>
+                    <StyledForm onSubmit={updateProfile}>
+                        <StyledSmallText>Profile Picture</StyledSmallText>
+                        <input ref={refSRC} name='image' type="file" accept="image/*" />
+                        <Button >Submit Changes</Button>
+                    </StyledForm>
+                </ProfileInfo>
+                )}
                 {canEdit && !isEditing && <EditProfileButton onClick={() => setIsEditing(true)} >Edit Profile</EditProfileButton>}
             </ProfileContainer>
             <CommentHistory>
@@ -204,6 +215,18 @@ const Profile: NextPage<ProfileProps> = ({
         </PageContainer>
     );
 };
+
+const StyledForm = styled.form`
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    width: 30%;
+    height: 100%;
+`
+
+const StyledSmallText = styled(SmallText)`
+    margin: 0 0 -10px 0;
+`;
 
 const Column = styled.div`
     display: flex;
@@ -246,9 +269,10 @@ const ProfileContainer = styled.div`
 const ProfileInfo = styled.div`
     display: flex;
     flex-direction: row;
+    column-gap: 30px;
     border: 1px solid ${MainTheme.colors.stroke};
     padding: ${MainTheme.dimensions.padding.container};
-    width: 50%;
+    width: 60%;
 `;
 
 const ProfilePicture = styled.img`
