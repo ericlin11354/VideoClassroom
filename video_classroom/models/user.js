@@ -18,6 +18,7 @@ const UserSchema = new mongoose.Schema({
 		minlength: 4,
 		trim: true,
 	},
+	name: { type: String },
 	title: { type: String },
 	description: { type: String },
     birthdate: { type: String },

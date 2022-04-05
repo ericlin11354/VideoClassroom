@@ -6,29 +6,64 @@ import {
 } from './Text';
 import { Like } from '@styled-icons/boxicons-regular/Like';
 import { MainTheme } from '../styles/MainTheme';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Video } from './Objects/Video';
+import { CommentData } from './CommentData';
 
 export interface ProfileComment extends React.HTMLAttributes<HTMLDivElement>{
     //video object
+    comment: CommentData;
     video?: Video;
 }
 
 export const ProfileComment: React.FC<ProfileComment> = ({
     video,
-}): React.ReactElement => (
-    <StyledDiv>
-        <CommentTitle title="A Video">Jianjia Chen commented on</CommentTitle>
-        <CommentStats>
-            <SmallText size="70%" color={MainTheme.colors.subtext} >Jianjia Chen</SmallText>
-            <SmallText size="70%" color={MainTheme.colors.subtext}>2022/02/25 21:35</SmallText>
-            <Counter size="70%" color={MainTheme.colors.subtext} icon={ChatLeft} >4</Counter>
-            <Counter size="70%" color={MainTheme.colors.subtext} icon={Like} >500</Counter>
-        </CommentStats>
-        <SmallText>What is love? Baby don&#39;t hurt me.</SmallText>
-    </StyledDiv>
-);
+    comment,
+}): React.ReactElement => {
+
+    const [videoTitle, setVideoTitle] = useState<string>('');
+    
+    useEffect(() => {
+        const url = process.env.SERVER_URL + '/api/catalogue/' + comment.videoid;
+        const request = new Request(url, {
+            method: 'get', 
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+        });
+        
+        const response = fetch(request)
+        .then(async function(res) {
+            if (!res.ok) {
+                return false
+            }
+
+            const resBody = await res.json()
+            // console.log(resBody)
+            // console.log(comment.videoid)
+            setVideoTitle(resBody.video.title)
+
+        }).catch((error) => {
+            // console.log(error)
+        })
+        
+    }, [video])
+
+    return (
+        <StyledDiv>
+            <CommentTitle title={videoTitle}>{comment.username + ' commented on'} </CommentTitle>
+            <CommentStats>
+                <SmallText size="70%" color={MainTheme.colors.subtext} >{comment.username}</SmallText>
+                <SmallText size="70%" color={MainTheme.colors.subtext}>{comment.date.toString()}</SmallText>
+                <Counter size="70%" color={MainTheme.colors.subtext} icon={ChatLeft} >{comment.replies.length}</Counter>
+                <Counter size="70%" color={MainTheme.colors.subtext} icon={Like} >{comment.likes}</Counter>
+            </CommentStats>
+            <SmallText>{comment.comment}</SmallText>
+        </StyledDiv>
+    )
+};
 
 const CommentStats = styled.div`
     display: flex;

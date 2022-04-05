@@ -133,7 +133,9 @@ Body should be of the following format:
     property n: type n
 }
 */
-router.patch('/', mongoChecker, async (req, res) => {
+// not sure why, but a patch request always returned a 400 without entering this route,
+// so I'm using post instead
+router.post('/edit/', mongoChecker, async (req, res) => {
 	const username = req.session.username
 
     try {
@@ -143,7 +145,7 @@ router.patch('/', mongoChecker, async (req, res) => {
             res.status(404).send('User not found')
         } else {
             for (const property in req.body) {
-                if (property !== '_id' && user.get(property) != undefined){
+                if (property !== '_id'){
                     user.set(property, req.body[property])
                 }
             }

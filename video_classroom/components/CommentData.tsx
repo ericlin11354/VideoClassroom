@@ -53,7 +53,7 @@ export class CommentData {
     }
 }
 
-export const commentsMongoToClass = (mongoComments: Array<any>): Array<CommentData> => {
+export const commentsMongoToClass = (mongoComments: Array<any>, pushAll?: boolean): Array<CommentData> => {
     // console.log(mongoComments)
     const questions = []
     const answers = []
@@ -86,7 +86,9 @@ export const commentsMongoToClass = (mongoComments: Array<any>): Array<CommentDa
         }
 
         if (parentComment) {
-            // parentComment.replies.push(newComment)
+            if (pushAll){
+                convertedComments.push(newComment)
+            }
         } else {
             convertedComments.push(newComment)
         }
