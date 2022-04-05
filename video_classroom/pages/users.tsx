@@ -21,11 +21,8 @@ export const Users: React.FC<UsersProps> = ({
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
     const [users, setUsers] = useState<any>([]);
-    
-    /** Search User functionality goes here */
-    const searchVideos = () => {
-        /** Backend GET request included here */
-    }
+    const [displayedUsers, setDisplayedUsers] = useState<any>([]);
+    const [searchTerm, setSearchTerm] = useState<string>('');
 
     useEffect(() => {
         setIsLoggedIn(isUserLoggedIn())
@@ -50,16 +47,25 @@ export const Users: React.FC<UsersProps> = ({
 
             const resBody = await res.json()
             setUsers(resBody)
+            setDisplayedUsers(resBody)
 
         }).catch((error) => {
             console.log(error)
         })
     }
+
     useEffect(() => {
 
         getUsers()
+        filterUsers()
 
     }, [isLoggedIn, isAdmin])
+
+    useEffect(() => {
+
+        filterUsers()
+
+    }, [searchTerm])
 
 
     const toggleAddUser = (e: React.MouseEvent<HTMLElement>): void => {
@@ -124,7 +130,7 @@ export const Users: React.FC<UsersProps> = ({
     /** Map users to ReactNodes */
     const displayUsers = (): React.ReactNode[] => {
         return (
-            users.map((user: any, index: number) => 
+            displayedUsers.map((user: any, index: number) => 
                 (
                     <StyledDiv>
                         <SmallText children={user.username}/>
@@ -136,6 +142,33 @@ export const Users: React.FC<UsersProps> = ({
         )
     };
 
+    
+    const filterUsers = () => {
+        const searchTitle = searchTerm
+        
+        if (searchTitle != '') {
+            const temp = [...users];
+            const newList = []
+            for (let i=0; i<temp.length; i++) {
+                if (temp[i].username.toLowerCase().includes(searchTitle.toLowerCase())) {
+                    newList.push(temp[i]);
+                }
+            }
+            setDisplayedUsers([...newList]);
+        }
+        else {
+            setDisplayedUsers([...users]);
+        }
+    }
+
+    const handleSearchUsers: React.FormEventHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const searchTitle = event.target.value;
+        setSearchTerm(searchTitle)
+
+        // filterUsers(searchTitle)
+    };
+
+
     return (
         <>
             <PopupContainer>
@@ -146,7 +179,7 @@ export const Users: React.FC<UsersProps> = ({
             <PageContainer {...props} >
                 <NavBar />
                 <CatalogueContainer>
-                    <StyledInput onChange={searchVideos} placeholder="Search..." icon={Search} />
+                    <StyledInput onChange={handleSearchUsers} placeholder="Search..." icon={Search} />
                     <VideoList>
                         {displayUsers()}
                         {isAdmin && <AddUserButton tip='Add User' onClick={toggleAddUser}> Add User </AddUserButton>}
