@@ -83,6 +83,8 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
     const commenterProps: CommenterProps = {
         timestamp: commentData.timestamp,
         parentComment: commentData,
+
+        vid: commentData.videoid,
     
         addCommentFunc: addCommentFunc,
         isCommenterOpen: isCommenterOpen,

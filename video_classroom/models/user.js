@@ -23,6 +23,7 @@ const UserSchema = new mongoose.Schema({
     birthdate: { type: String },
     // reviews: '420 (4.5 stars)',
     reviews: [Number],
+    comments: {type: [String]},
     permission: { 
 		type: String,
 		required: function() {

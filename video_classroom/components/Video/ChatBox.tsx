@@ -8,26 +8,50 @@ import {
 import VideoBar from './VideoBar';
 import ChatBubble, { ChatBubbleProps } from "./ChatBubble";
 import { timeStamp } from "console";
-import { CommentData } from "../CommentData";
+import { CommentData, commentsMongoToClass } from "../CommentData";
 import Commenter from "./Commenter";
 import {ChatBubbleOutline} from '@styled-icons/material-outlined';
 
 interface VideoPlayerProps {
-	MsgList?: Array<CommentData>;
-    videoid?: string;
+    videoid: string;
     videoTime?: number;
 }
 
 export const ChatBox: React.FC<VideoPlayerProps> = ({
-	MsgList=[],
     videoid,
     videoTime=0,
 	children,
 	...props
 }): React.ReactElement => {
 
-
+    const MsgList: Array<CommentData> = []
     const [comments, setComments] = useState<Array<CommentData>>(MsgList);
+    useEffect(() => {
+        
+        const url = process.env.SERVER_URL + '/api/comment/videoComments/' + videoid;
+        const request = new Request(url, {
+            method: 'get',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+        });
+
+        const response = fetch(request)
+        .then(async function(res) {
+            if (res.ok) {
+                const resBody = await res.json()
+
+                console.log(resBody)
+    
+                setComments(commentsMongoToClass(resBody))
+            }
+            
+        }).catch((error) => {
+            console.log(error)
+        })
+    }, []);
+
     const [isCommenterOpen, setIsCommenterOpen] = useState<boolean>(false);
 
     const updateComments = (): void => {
@@ -36,6 +60,9 @@ export const ChatBox: React.FC<VideoPlayerProps> = ({
     }
     
     const addComment = (newElement: CommentData): void => {
+
+
+
         if (newElement.parent){
 
         } else {
@@ -91,6 +118,8 @@ export const ChatBox: React.FC<VideoPlayerProps> = ({
                 <Commenter
                     timestamp={Math.floor(videoTime) || 0}
                     parentComment={undefined}
+
+                    vid={videoid}
                 
                     isCommenterOpen={isCommenterOpen}
                     addCommentFunc={addComment}

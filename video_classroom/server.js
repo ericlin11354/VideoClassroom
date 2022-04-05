@@ -34,10 +34,6 @@ app.prepare()
 	const catalogueRouter = require('./routes/catalogue')
 	server.use('/api/catalogue', catalogueRouter)
 
-	server.get('*', (req, res) => {
-		return handle(req, res)
-	})
-
 	server.use(bodyParser.json());
 
 	server.use(session({
@@ -55,6 +51,12 @@ app.prepare()
 	const loginRouter = require('./routes/login');
 	server.use('/api/users', loginRouter);
 
+	const commentRouter = require('./routes/commenting')
+	server.use('/api/comment', commentRouter)
+
+	server.get('*', (req, res) => {
+		return handle(req, res)
+	})
 })
 .catch((ex) => {
   console.error(ex.stack)

@@ -19,6 +19,7 @@ const VideoSchema = mongoose.Schema({
     video_id: { type: String },
     video_url: { type: String },
     visibility: { type: String },
+    comments: { type: [String] },
 });
 
 const CourseSchema = mongoose.Schema({

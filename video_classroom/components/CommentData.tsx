@@ -1,10 +1,9 @@
+import { timeStamp } from "console";
 import moment from "moment"
 
-var globalId = 0
-
 export class CommentData {
-    id: number;
-    videoid: number;
+    id: string;
+    videoid: string;
 	username: string;
 	date: moment.Moment;
 	timestamp?: number;
@@ -22,10 +21,11 @@ export class CommentData {
         username: string, 
         timestamp: number, 
         parent?: CommentData,
-        videoid?: number,
+        videoid?: string,
+        id?: string,
     ){
-        this.id = globalId
-        this.videoid = videoid || -1
+        this.id = id || '0'
+        this.videoid = videoid || '0'
         this.username = username
         this.date = moment()
         this.timestamp = timestamp
@@ -51,6 +51,59 @@ export class CommentData {
     
         return rootComment
     }
+}
+
+export const commentsMongoToClass = (mongoComments: Array<any>): Array<CommentData> => {
+    // console.log(mongoComments)
+    const questions = []
+    const answers = []
+    const convertedComments = []
+    for (const element of mongoComments) {
+        const parentComment: any = convertedComments.find(ele => ele.id === element.parent)
+
+        const newComment = new CommentData(
+            element.body,
+            element.user,
+            element.timeStamp,
+            parentComment,
+            element.video,
+            element._id,
+        )
+
+        newComment.date = moment(element.timePosted, 'YYYY-MM-DD HH:mm:ss')
+        newComment.likedUsers = element.likedBy
+        newComment.likes = element.likedBy.length
+        if (element.answer && element.answer !== ''){
+            questions.push(newComment)
+            answers.push(element.answer)
+        }
+        if (answers.includes(element._id)){
+            let question = questions[answers.indexOf(element._id)]
+            if (question){
+                question.answer = newComment
+                newComment.isAnswer = true
+            }
+        }
+
+        if (parentComment) {
+            // parentComment.replies.push(newComment)
+        } else {
+            convertedComments.push(newComment)
+        }
+
+    }
+    
+    convertedComments.sort((a:CommentData, b:CommentData): number => {
+        if (a.timestamp === b.timestamp) {
+            return a.date.valueOf() - b.date.valueOf()
+        } else if (a.timestamp !== undefined && b.timestamp !== undefined) {
+            return a.timestamp - b.timestamp
+        } else {
+            return 0
+        }
+    })
+
+    return convertedComments
 }
 
 export const getRootComment = (commentData: CommentData): CommentData | undefined => {
