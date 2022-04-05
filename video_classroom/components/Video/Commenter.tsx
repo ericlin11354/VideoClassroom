@@ -238,7 +238,7 @@ export const Commenter: React.FC<CommenterProps> = ({
             {parentComment && <NumItems>{parentComment.likes > 0 && parentComment.likes}</NumItems>}
             {parentComment && <Button tip={'Like'} onClick={likeComment} icon={isLikedByUser && HandThumbsUpFill || HandThumbsUp} {...buttonStyleProps}></Button>}
             <NumItems>{numComments > 0 && numComments}</NumItems>
-            <Button onClick={toggleCommenter} tip={'Comment'} icon={ChatBubbleOutline} {...buttonStyleProps}></Button>
+            {username && username !== '' && <Button onClick={toggleCommenter} tip={'Comment'} icon={ChatBubbleOutline} {...buttonStyleProps}></Button>}
             {isAdmin && parentComment && <Button tip={'Delete'} onClick={deleteComment} icon={Delete} {...buttonStyleProps}></Button>}
             {isAdmin && parentComment && parentComment.parent && <Button tip={'Mark Comment'} onClick={markComment} icon={questionAnswered && StarFill || Star} {...buttonStyleProps}></Button>}
             {(!parentComment || parentComment.replies.length > 0) && parentComment && <Button tip={'Expand'} onClick={toggleReplies} icon={isRepliesOpen && EyeFill || Eye} {...buttonStyleProps}></Button>}

@@ -41,8 +41,6 @@ export const ChatBox: React.FC<VideoPlayerProps> = ({
         .then(async function(res) {
             if (res.ok) {
                 const resBody = await res.json()
-
-                console.log(resBody)
     
                 setComments(commentsMongoToClass(resBody))
             }

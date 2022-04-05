@@ -14,6 +14,7 @@ export class CommentData {
     likes: number;
     likedUsers: Array<string>;
     answer?: CommentData;
+    profilePic?: string;
     isAnswer: boolean;
 
     constructor(
@@ -84,6 +85,8 @@ export const commentsMongoToClass = (mongoComments: Array<any>, pushAll?: boolea
                 newComment.isAnswer = true
             }
         }
+        newComment.profilePic = element.profilePic
+        console.log(element.profilePic)
 
         if (parentComment) {
             if (pushAll){

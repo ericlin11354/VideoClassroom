@@ -98,10 +98,11 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
         deleteCommentFunc: deleteCommentFunc,
         markCommentFunc: markCommentFunc,
     }
+    
 
 	return (
 		<ChatContainer {...props}>
-			<ProfilePic src={"kitty-pensive.jpeg"}> 
+			<ProfilePic src={commentData.profilePic || "kitty-pensive.jpeg"}> 
             </ProfilePic>
 			<MsgTitle> 
                 <CommentText>

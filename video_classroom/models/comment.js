@@ -16,6 +16,7 @@ const CommentSchema = mongoose.Schema({
     answer: { type: String },
     parent: { type: String },
     children: { type: [String] },
+    profilePic: {type: String},
 });
 
 CommentSchema.statics.findByUser = function(username) {

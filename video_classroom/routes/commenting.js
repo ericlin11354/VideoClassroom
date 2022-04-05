@@ -109,6 +109,11 @@ router.get('/videoComments/:id', mongoChecker, async (req, res) => {
         
 		const comments = await Comment.findByVideo(vid)
 
+        for (comment of comments){
+            const commenter = await User.findUser(comment.user)
+            comment.profilePic = commenter.image_url 
+        }
+
         res.send(comments)
 
 	} catch (error) {
