@@ -49,7 +49,6 @@ UserSchema.statics.findUser = function(username) {
 
 UserSchema.pre('save', function(next) {
 	const user = this; // binds this to User document instance
-	console.log('asdsad')
 
 	// checks to ensure we don't hash password more than once
 	if (user.isModified('password')) {
@@ -57,7 +56,7 @@ UserSchema.pre('save', function(next) {
 		bcrypt.genSalt(10, (err, salt) => {
 			bcrypt.hash(user.password, salt, (err, hash) => {
 				user.password = hash
-				log(hash)
+				// log(hash)
 				next()
 			})
 		})

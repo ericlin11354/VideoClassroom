@@ -192,6 +192,7 @@ const Filters = styled.div`
 const PageContainer = styled.div`
     position: fixed;
     display: flex;
+    overflow-y: scroll;
     flex-direction: column;
     align-items: center;
     height: 100%;

@@ -5,6 +5,7 @@ const { User } = require('../models/user')
 const log = console.log
 
 const { mongoChecker } = require('./helpers/mongo_helpers')
+const { getRootComment, deleteComment } = require('./helpers/comment_helper')
 
 
 // const bodyParser = require('body-parser')
@@ -29,7 +30,7 @@ router.post('/', mongoChecker, async (req, res) => {
             return
         }
 
-        console.log(req.body.permission);
+        // console.log(req.body.permission);
         
         // Create a new user
         const user = new User({
@@ -97,6 +98,8 @@ Body should be of the following format:
 router.delete('/', mongoChecker, async (req, res) => {
 	const username = req.body.username
 
+    console.log(username)
+
     try {
         const user = await User.findUser(username);
         
@@ -106,15 +109,21 @@ router.delete('/', mongoChecker, async (req, res) => {
         } else {
             if (!((req.session.permission === 'admin' && user.get('permission') !== 'admin') || req.session.username === username)){
                 res.status(401).send('Unauthorized to delete this user.')
+                return
             }
-            const isDeletingSelf = username === user.get('username')
+            const isDeletingSelf = req.session.username === user.get('username')
             await User.deleteOne({ _id: user.get('_id') });
+
+            
+		    const comments = await Comment.findByUser(username)
+            for (const element of comments) {
+                await deleteComment(element)
+            }
 
             if (isDeletingSelf){
                 req.session.destroy()
-                res.redirect('/catalogue')
             }
-            res.status(200).json(user)
+            res.status(200).send()
         }
 
     } catch (error) {

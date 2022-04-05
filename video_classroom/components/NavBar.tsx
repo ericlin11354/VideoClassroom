@@ -133,8 +133,8 @@ export const NavBar: React.FC<NavBarProps> = ({
                 {/* <Button onClick={addClass} >Add Class</Button> */}
             </LeftContainer>
             <RightContainer>
-                { username !== '' && status === 'Admin' && <Button tip={'Manage Users'} onClick={() => window.location.replace("users")} children='Users' />}
-                { username !== '' && status === 'Admin' && <Button tip={'Upload a Video'} icon={Upload} onClick={handleUploadClick} />}
+                { username !== '' && isAdmin && <Button tip={'Manage Users'} onClick={() => window.location.replace("users")} children='Users' />}
+                { username !== '' && isAdmin && <Button tip={'Upload a Video'} icon={Upload} onClick={handleUploadClick} />}
                 {
                     username !== '' && <Button tip={'View Profile'} icon={PersonCircle} onClick={handleProfileClick} />
                 }

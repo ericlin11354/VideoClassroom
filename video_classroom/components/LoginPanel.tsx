@@ -8,9 +8,11 @@ import { isUserLoggedIn } from "../helpers/permHelper";
 const log = console.log
 
 interface LoginPanelProps {
+    signupOnly?: boolean,
 }
 
 export const LoginPanel: React.FC<LoginPanelProps> = ({
+    signupOnly,
 	children,
 	...props
 }): React.ReactElement => {
@@ -23,7 +25,7 @@ export const LoginPanel: React.FC<LoginPanelProps> = ({
     
     const [warnMsg, setWarnMsg] = useState<string>('');
     const [msgIsWarn, setMsgIsWarn] = useState<boolean>(true);
-    const [isSignup, setIsSignup] = useState<boolean>(false);
+    const [isSignup, setIsSignup] = useState<boolean>(signupOnly && true || false);
 
     const [newUserType, setNewUserType] = useState<string>('user');
     
@@ -191,9 +193,12 @@ export const LoginPanel: React.FC<LoginPanelProps> = ({
                 <Warning isWarn={msgIsWarn}>
                     {warnMsg}
                 </Warning>
-                <span>
-                    Already have an account? <Switcher onClick={toggleSignin}>Log in here.</Switcher>
-                </span>
+                {
+                    !signupOnly && <span>
+                        Already have an account? <Switcher onClick={toggleSignin}>Log in here.</Switcher>
+                    </span>
+                }
+               
             </LoginFrame>
         )
     }else{
