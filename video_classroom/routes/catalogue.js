@@ -7,6 +7,8 @@ const { mongoose } = require('../db/mongoose')
 const { Course, Video } = require('../models/course')
 const { ObjectID } = require('mongodb')
 
+const { Comment } = require('../models/comment')
+
 // multipart middleware: allows you to access uploaded file from req.file
 const multipart = require('connect-multiparty');
 const multipartMiddleware = multipart();
@@ -94,6 +96,12 @@ router.get('/', async (req, res) => {
 	try {
 		const videos = await Video.find()
 		// res.send(students) // just the array
+
+		for (video of videos){
+			console.log(video._id)
+			const temp = await Comment.findByVideo(video._id)
+			video.num_comments = temp.length
+		}
 		res.send({ videos }) // can wrap students in object if want to add more properties
 	} catch(error) {
 		log(error)
