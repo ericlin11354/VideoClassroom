@@ -17,7 +17,7 @@ import Popup from './Popup';
 import LoginPanel from './LoginPanel';
 import { UserStatusProps, Video } from './Objects';
 import router, { useRouter } from 'next/router';
-import { addVideoToDB } from '../scripts/video_script';
+// import { addVideoToDB } from '../scripts/video_script';
 import { getUsername, isUserAdmin } from '../helpers/permHelper';
 
 export interface NavBarProps extends React.HTMLAttributes<HTMLDivElement>, UserStatusProps{
