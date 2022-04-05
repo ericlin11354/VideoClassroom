@@ -5,6 +5,7 @@ import {
     UploadPanel,
 } from '.';
 import { Exit } from '@styled-icons/icomoon/Exit';
+import { Enter } from '@styled-icons/icomoon/Enter';
 import { MainTheme } from '../styles/MainTheme';
 import { PersonCircle } from '@styled-icons/bootstrap/PersonCircle';
 import React, { RefObject, useEffect, useRef, useState } from 'react';
@@ -138,7 +139,7 @@ export const NavBar: React.FC<NavBarProps> = ({
                 {
                     username !== '' && <Button tip={'View Profile'} icon={PersonCircle} onClick={handleProfileClick} />
                 }
-                <Button tip={'Login / Signup'} icon={Exit} onClick={handleLoginClick} />
+                <Button tip={username && username !== '' && 'Logout' || 'Login / Signup'} icon={username && username !== '' && Exit || Enter} onClick={handleLoginClick} />
             </RightContainer>
             <Popup isOpen={isLoginOpen} setIsOpenFunc={setIsLoginOpen}>
                 <LoginPanel></LoginPanel>
