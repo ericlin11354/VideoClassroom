@@ -98,7 +98,6 @@ router.get('/', async (req, res) => {
 		// res.send(students) // just the array
 
 		for (video of videos){
-			console.log(video._id)
 			const temp = await Comment.findByVideo(video._id)
 			video.num_comments = temp.length
 		}
