@@ -6,17 +6,23 @@ const log = console.log
 log('Loaded front-end javascript.')
 
 // A function to send a POST request with a new video.
-export function addVideoToDB(video) {
+export function addVideoToDB(title, desc, visibility, src) {
     // the URL for the request
     const url = `/api/catalogue/`;
+
+    log('src', src);
+    const videoData = new FormData(src);
+    log('before', videoData);
+    videoData.append('title', title);
+    videoData.append('description', desc);
+    videoData.append('visibility', visibility);
+    log('after', videoData);
+    // data['src'] = video.src
+
     // Create our request constructor with all the parameters we need
     const request = new Request(url, {
         method: 'post', 
-        body: JSON.stringify(video),
-        headers: {
-            'Accept': 'application/json, text/plain, */*',
-            'Content-Type': 'application/json'
-        },
+        body: videoData,
     });
 
     // Send the request with fetch()

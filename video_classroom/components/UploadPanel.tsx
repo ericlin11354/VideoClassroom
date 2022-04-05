@@ -1,12 +1,5 @@
 import { addVideoToDB } from '../scripts/video_script';
-import Dropzone, {
-    useDropzone,
-    DropEvent,
-    FileRejection,
-    DropzoneProps,
-    DropzoneOptions,
-} from 'react-dropzone';
-import React, { RefObject, useRef, useState } from 'react';
+import React, { FormEvent, FormEventHandler, RefObject, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Button } from './Button';
 import CheckBox from './CheckBox';
@@ -15,6 +8,7 @@ import { Video } from './Objects/Video';
 import moment from 'moment';
 import { CustomFile } from './Objects/CustomFile';
 import { couldStartTrivia } from 'typescript';
+import SmallText from './Text/SmallText';
 
 
 export interface UploadPanelProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -31,106 +25,56 @@ export const UploadPanel: React.FC<UploadPanelProps> = ({
     const refVisibility = useRef() as RefObject<HTMLInputElement>;
     const [videoFileName, setVideoFileName] = useState('');
     const [thumbnailFileName, setThumbnailFileName] = useState('');
+    const [statusText, setStatusText] = useState('');
 
-    const [videoSRC, setVideoSRC] = useState<CustomFile>({
-        name: 'emptyFile',
-        size: 0,
-        lastModified: 0,
-        type: 'undefined',
-        webkitRelativePath: 'undefined'
-    });
+    const [videoSRC, setVideoSRC] = useState<FormData>();
 
-    const [thumbnailSRC, setThumbnailSRC] = useState<CustomFile>({
-        name: 'emptyFile',
-        size: 0,
-        lastModified: 0,
-        type: 'undefined',
-        webkitRelativePath: 'undefined'
-    })
+    const [thumbnailSRC, setThumbnailSRC] = useState<CustomFile>()
 
-    const onVideoDropHandler = (acceptedFiles: File[]) => {
-        console.log('Video file successfully dropped.');
-        setVideoFileName(acceptedFiles[0].name);
-        setVideoSRC({
-            name: acceptedFiles[0].name,
-            size: acceptedFiles[0].size,
-            lastModified: acceptedFiles[0].lastModified,
-            type: acceptedFiles[0].type,
-            webkitRelativePath: acceptedFiles[0].webkitRelativePath
-        })
-    }
-
-    const onThumbnailDropHandler = (acceptedFiles: File[]) => {
-        console.log('Thumbnail file successfully dropped.');
-        setThumbnailFileName(acceptedFiles[0].name);
-        setThumbnailSRC({
-            name: acceptedFiles[0].name,
-            size: acceptedFiles[0].size,
-            lastModified: acceptedFiles[0].lastModified,
-            type: acceptedFiles[0].type,
-            webkitRelativePath: acceptedFiles[0].webkitRelativePath
-        })
-    }
-
-    const { open: videoOpen } = useDropzone({
-        onDrop: onVideoDropHandler,
-        disabled: false,
-        noClick: true,
-        noKeyboard: true,
-    });
-
-    const { open: thumbnailOpen } = useDropzone({
-        onDrop: onThumbnailDropHandler,
-        disabled: false,
-        noClick: true,
-        noKeyboard: true,
-    });
-
-    const videoRef: Video = {
-        title: refTitle.current?.value || '',
-        description: refDesc.current?.value || '',
-        video_len: refLength.current?.value || '',
-        thumbnail: thumbnailSRC,
-        src: videoSRC,
-        // checking for correct type 
-        visibility: (refVisibility.current?.value && 
-            (refVisibility.current?.value == 'Everyone' || refVisibility.current?.value == 'TAProfs')) ? refVisibility.current.value : 'Everyone',
-        num_comments: 0,
-        num_likes: 0,
-        date: moment().toDate(),
-        status: { professor_answered: false, student_answered: false, unresolved_answers: false }
-    }
-
-    const handleSubmit = () => {
-        if (!videoSRC) 
-            console.log('Missing src');
-        else {
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (refTitle.current?.value === '' || refDesc.current?.value === '' || !refSRC.current?.value) {
+            // console.log('Missing fields');
+            setStatusText('Missing fields');
+        } else {
             console.log('Adding Video to DB');
-            addVideoToDB(videoRef)
+            addVideoToDB(refTitle.current?.innerText, refDesc.current?.value, refVisibility.current?.checked, e.target);
+            // window.location.replace("catalogue");
         }
     }
+
+    // const handleFileOnChange = (e: Event) => {
+    //     console.log(e.currentTarget?.files);
+    //     setVideoSRC(e.currentTarget);
+    // }
 
     return (
         <UploadFrame {...props} >
             <Input inputRef={refTitle} label="Video Title"></Input>
             <Input inputRef={refDesc} label="Video Description"></Input>
-            <Input inputRef={refLength} label="Video Length"></Input>
-            <Input inputRef={refThumbnail} label="Video Thumbnail" onClick={thumbnailOpen} placeholder={thumbnailFileName}></Input>
-            <Input inputRef={refSRC} label="Video src" onClick={videoOpen} placeholder={videoFileName}></Input>
+            {/* <Input inputRef={refLength} label="Video Length"></Input> */}
+            {/* <Input inputRef={refThumbnail} label="Video Thumbnail" onClick={thumbnailOpen} placeholder={thumbnailFileName}></Input>
+            <Input inputRef={refSRC} label="Video src" onClick={videoOpen} placeholder={videoFileName}></Input> */}
+            {/* <input type="file" onChange={(e) => {
+            if (e.target.files[0] !== null)
+                setVideoSRC(e.target.files[0])
+            }}></input> */}
             <CheckBox inputRef={refVisibility} label="Visible for TAs and Professors only" />
-            <Button onClick={handleSubmit}>Submit</Button>
+            {/* <Button onClick={handleSubmit}>Submit</Button> */}
+            <form onSubmit={handleSubmit}>
+                <input ref={refSRC} name='image' type="file" />
+                <Button >Submit</Button>
+            </form>
+            <SmallText color='red' >{statusText}</SmallText>
             
         </UploadFrame>
 )};
 
-
 const UploadFrame = styled.div`
     padding: 5px;
 	position: relative;
-    min-width: 300px;
-    min-height: 250px;
-    width: 50vw;
-    height: 40vh;
+    min-width: 50vw;
+    min-height: 40vh;
     background-color: #ffffff;
     
     display: flex;

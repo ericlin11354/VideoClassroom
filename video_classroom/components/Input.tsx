@@ -8,6 +8,7 @@ export interface InputProps extends React.HTMLAttributes<HTMLInputElement> {
     icon?: ForwardRefExoticComponent<RefAttributes<SVGSVGElement>>;
     inputRef?: RefObject<HTMLInputElement>;
     label?: string;
+    disabled?: boolean;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -15,12 +16,13 @@ export const Input: React.FC<InputProps> = ({
     icon,
     inputRef,
     label,
+    disabled = false,
     ...props
 }): React.ReactElement => (
     <StyledDiv {...props} >
         {label && <SmallText>{label}</SmallText>}
         <InputContainer>
-            <StyledInput ref={inputRef} type="text" placeholder={placeholder} />
+            <StyledInput ref={inputRef} type="text" placeholder={placeholder} disabled={disabled} />
             {icon && <Icon as={icon} />}
         </InputContainer>
     </StyledDiv>

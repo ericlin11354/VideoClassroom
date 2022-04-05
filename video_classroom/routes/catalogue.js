@@ -7,11 +7,28 @@ const { mongoose } = require('../db/mongoose')
 const { Course, Video } = require('../models/course')
 const { ObjectID } = require('mongodb')
 
+// multipart middleware: allows you to access uploaded file from req.file
+const multipart = require('connect-multiparty');
+const multipartMiddleware = multipart();
+
+const path = require("path");
+
+// cloudinary: configure using credentials found on your Cloudinary Dashboard
+// sign up for a free account here: https://cloudinary.com/users/register/free
+const cloudinary = require('cloudinary');
+cloudinary.config({
+    cloud_name: 'dqdagc8tg',
+    api_key: '214252355416824',
+    api_secret: '4V6GAZL1un-RSElUrI_dsURv2GI'
+});
+
 function isMongoError(error) { // checks for first error returned by promise rejection if Mongo database suddently disconnects
     return typeof error === 'object' && error !== null && error.name === "MongoNetworkError"
 }
 
-router.post('/', async (req, res) => {
+router.post('/', multipartMiddleware, (req, res) => {
+	console.log(req)
+	console.log('abs path', req.body, req.files)
     // check mongoose connection established.
 	if (mongoose.connection.readyState != 1) {
 		log('Issue with mongoose connection')
@@ -19,33 +36,49 @@ router.post('/', async (req, res) => {
 		return;
 	}  
 
-	console.log(req.body.src);
+	cloudinary.v2.uploader.upload(
+		req.files.image.path,
+		{ resource_type: "video"},
+		function(error, result) {
 
-    const video = new Video({
-        title: req.body.title,
-		description: req.body.description,
-		video_len: req.body.video_len,
-		thumbnail: req.body.thumbnail,
-		src: req.body.src,
-		visibility: req.body.visibility,
-		num_comments: req.body.num_comments,
-		num_likes: req.body.num_likes,
-		date: req.body.date,
-		status: req.body.status
-    })
+			console.log('cloudinary upload:', error, result)
 
-    // Save restaurant to the database (async await)
-	try {
-		const result = await video.save()	
-		res.send(result)
-	} catch(error) {
-		log(error) // log server error to the console, not to the client.
-		if (isMongoError(error)) { // check for if mongo server suddenly dissconnected before this request.
-			res.status(500).send('Internal server error')
-		} else {
-			res.status(400).send('Bad Request') // 400 for bad request gets sent to client.
+			const getTimeMinutes = () => {
+				const minutes = Math.floor(result.duration / 60);
+				const seconds = Math.floor(result.duration - minutes * 60);
+				return minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
+			}
+
+			const video = new Video({
+				title: req.body.title,
+				description: req.body.description,
+				video_len: getTimeMinutes(),
+				thumbnail: '',
+				video_id: result.public_id,
+				video_url: result.url,
+				visibility: req.body.visibility,
+				num_comments: 0,
+				num_likes: 0,
+				date: new Date(),
+				status: {
+					professor_answered: false,
+					student_answered: false,
+					unresolved_answers: 0,
+				}
+			})
+		
+            // Save image to the database
+            video.save().then(
+                saveRes => {
+                    res.send(saveRes);
+                },
+                error => {
+                    res.status(400).send(error); // 400 for bad request
+                }
+            );
+
 		}
-	}
+	)
 })
 
 router.get('/', async (req, res) => {
@@ -116,15 +149,16 @@ router.post('/:id/', async (req, res) => {
 	}
 })
 
-router.delete('/:id/', async (req, res) => {
+router.delete('/:id/', (req, res) => {
 	// Add code here
 
-	const id = req.params.id
+	const videoId = req.params.id
 
-	if (!ObjectID.isValid(id)) {
-		res.status(404).send()  // if invalid id or resv_id, definitely can't find resource, 404.
-		return;  // so that we don't run the rest of the handler.
-	}
+	// we comment since we delete from cloudinary first
+	// if (!ObjectID.isValid(videoId)) {
+	// 	res.status(404).send()  // if invalid id or resv_id, definitely can't find resource, 404.
+	// 	return;  // so that we don't run the rest of the handler.
+	// }
 
 	// check mongoose connection established.
 	if (mongoose.connection.readyState != 1) {
@@ -133,19 +167,21 @@ router.delete('/:id/', async (req, res) => {
 		return;
 	}	
 
-	// If id and resv_id are valid, findById twice
-	try {
-		const video = await Video.findById(id)
-		if (!video) {
-			res.status(404).send('Resource not found')  // could not find this student
-		} else {
-			res.send({video})
-			await Video.deleteOne(video)
-		}
-	} catch(error) {
-		log(error)
-		res.status(500).send('Internal Server Error')  // server error
-	}
+	cloudinary.uploader.destroy(videoId, function (error, result) {
+		console.log(error, result);
+        // Delete the image from the database
+        Video.findOneAndRemove({ video_id: videoId })
+            .then(video => {
+                if (!video) {
+                    res.status(404).send();
+                } else {
+                    res.send(video);
+                }
+            })
+            .catch(error => {
+                res.status(500).send(error); // server error, could not delete.
+            });
+    });
 })
 
 module.exports = router

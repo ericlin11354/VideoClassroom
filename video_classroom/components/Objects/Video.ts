@@ -7,8 +7,9 @@ export interface Video {
     num_comments: number;
     date: Date;
     video_len: string;
-    thumbnail: CustomFile;
-    src: CustomFile;
+    // thumbnail: CustomFile | undefined;
+    video_id: string;
+    video_url: string;
     status: {
         professor_answered?: boolean;
         student_answered?: boolean;

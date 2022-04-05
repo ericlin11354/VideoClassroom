@@ -1,7 +1,7 @@
 /* Student mongoose model */
 const mongoose = require('mongoose')
 
-const StatusSchema = new mongoose.Schema({
+const StatusSchema = mongoose.Schema({
     professor_answered: { type: Boolean },
     student_answered: { type: Boolean },
     unresolved_answers: { type: Boolean }
@@ -16,7 +16,8 @@ const VideoSchema = mongoose.Schema({
     video_len: { type: String },
     status: StatusSchema,
     thumbnail: { type: Object },
-    src: { type: Object },
+    video_id: { type: String },
+    video_url: { type: String },
     visibility: { type: String },
 });
 
@@ -29,4 +30,4 @@ const CourseSchema = mongoose.Schema({
 const Course = mongoose.model('Course', CourseSchema)
 const Video = mongoose.model('Video', VideoSchema)
 
-module.exports = { Course, Video, VideoSchema }
+module.exports = { Course, Video }
