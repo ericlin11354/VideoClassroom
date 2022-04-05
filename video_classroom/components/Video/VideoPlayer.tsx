@@ -69,7 +69,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             console.log(error)
         })
         
-    })
+    }, [vid])
 
     useEffect(() => {
         if (vidRef && vidRef.current){
@@ -104,12 +104,11 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
         setVolume: setVolume,
     }
 
-    //TODO: hardcoded stuff
-    const videoTitle = 'Hello World'
-    const submitterUN = 'Prof. Professor'
-    const submitTime = moment()
-    const courseName = 'csc404'
-    const videoDesc = 'This is my first video.'
+    // const videoTitle = 'Hello World'
+    // const submitterUN = 'Prof. Professor'
+    // const submitTime = moment()
+    // const courseName = 'csc404'
+    // const videoDesc = 'This is my first video.'
 
     return(
         <VideoChatDescFrame>
@@ -129,17 +128,17 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             </VideoChatFrame>
             <DescFrame>
                 <TextRow>
-                    <TitleItem>{videoTitle}</TitleItem>
+                    <TitleItem>{videoData && videoData.title || 'Hello World'}</TitleItem>
                 </TextRow>
-                <TextRow>
+                {/* <TextRow>
                     <DescItem>Part of {courseName}</DescItem>
-                </TextRow>
-                <TextRow>
+                </TextRow> */}
+                {/* <TextRow>
                     <DescItem>Submitted by {submitterUN} on {submitTime.toDate().toDateString()}</DescItem>
                 </TextRow>
-                    <br/>
+                    <br/> */}
                 <TextRow>
-                    <DescItem>{videoDesc}</DescItem>
+                    <DescItem>{videoData && videoData.description || ''}</DescItem>
                 </TextRow>
             </DescFrame>
         </VideoChatDescFrame>

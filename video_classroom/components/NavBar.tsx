@@ -90,6 +90,16 @@ export const NavBar: React.FC<NavBarProps> = ({
         setIsLoginOpen(false);
     }
 
+    const handleProfileClick = (e: React.MouseEvent<HTMLElement>) => {
+        router.replace({
+            pathname: '/profile',
+            query: 
+            {
+                username: username
+            },
+        })
+    }
+
     const addClass = () => {
         let name = refNewCourse.current?.value;
         // console.log(name);
@@ -126,7 +136,7 @@ export const NavBar: React.FC<NavBarProps> = ({
                 { username !== '' && status === 'Admin' && <Button tip={'Manage Users'} onClick={() => window.location.replace("users")} children='Users' />}
                 { username !== '' && status === 'Admin' && <Button tip={'Upload a Video'} icon={Upload} onClick={handleUploadClick} />}
                 {
-                    username !== '' && <Button tip={'View Profile'} icon={PersonCircle} onClick={() => window.location.replace("profile")} />
+                    username !== '' && <Button tip={'View Profile'} icon={PersonCircle} onClick={handleProfileClick} />
                 }
                 <Button tip={'Login / Signup'} icon={Exit} onClick={handleLoginClick} />
             </RightContainer>

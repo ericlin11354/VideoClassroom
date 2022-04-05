@@ -11,30 +11,100 @@ import {
 } from '../components';
 import { MainTheme } from '../styles/MainTheme';
 import type { NextPage } from 'next';
-import React, { RefObject, useRef, useState } from 'react';
+import React, { RefObject, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import { useRouter } from 'next/router';
+import { CommentData, commentsMongoToClass } from '../components/CommentData';
 
 export interface ProfileProps extends UserStatusProps {
 };
 
-const Person = {
-    name: 'Jianjia Chen',
-    title: '3rd-year CS Specialist',
-    description: 'Sometimes, I dream about cheese...',
-    birthdate: '01/02/2003',
-    reviews: '420 (4.5 stars)',
-    courses: 'CSC309, CSC343'
-}
+// const Person = {
+//     name: 'Jianjia Chen',
+//     title: '3rd-year CS Specialist',
+//     description: 'Sometimes, I dream about cheese...',
+//     birthdate: '01/02/2003',
+//     reviews: '420 (4.5 stars)',
+//     courses: 'CSC309, CSC343'
+// }
 
 const Profile: NextPage<ProfileProps> = ({
     status = 'Admin',
-}): React.ReactElement => {
+}) => {
+    const router = useRouter()
+    const { username } = router.query;
+    const [userData, setUserData] = useState<any>({});
+    const [comments, setComments] = useState<any>([]);
+
+    
+    const getUserData = (): void => {
+        if (username){
+            const url = process.env.SERVER_URL + '/api/users/' + username;
+            const request = new Request(url, {
+                method: 'get', 
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+            });
+            
+            const response = fetch(request)
+            .then(async function(res) {
+                if (!res.ok) {
+                    return false
+                }
+    
+                const resBody = await res.json()
+                // console.log(resBody)
+    
+                setUserData(resBody)
+    
+            }).catch((error) => {
+                console.log(error)
+            })
+        }
+    }
+    
+    const getUserComments = (): void => {
+        if (username){
+            const url = process.env.SERVER_URL + '/api/comment/userComments/' + username;
+            const request = new Request(url, {
+                method: 'get', 
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+            });
+            
+            const response = fetch(request)
+            .then(async function(res) {
+                if (!res.ok) {
+                    return false
+                }
+    
+                const resBody = await res.json()
+                // console.log(resBody)
+    
+                setComments(commentsMongoToClass(resBody.comments, true))
+    
+            }).catch((error) => {
+                console.log(error)
+            })
+        }
+    }
+    
+    useEffect(() => {
+        getUserData()
+        getUserComments()
+        
+    }, [username])
+
     const [isEditing, setIsEditing] = useState(false);
-    const [name, setName] = useState(Person.name);
-    const [title, setTitle] = useState(Person.title);
-    const [description, setDescription] = useState(Person.description);
-    const [birthdate, setBirthdate] = useState(Person.birthdate);
-    const [courses, setCourses] = useState(Person.courses);
+    // const [name, setName] = useState(Person.name);
+    // const [title, setTitle] = useState(Person.title);
+    // const [description, setDescription] = useState(Person.description);
+    // const [birthdate, setBirthdate] = useState(Person.birthdate);
+    // const [courses, setCourses] = useState(Person.courses);
 
     const refName = useRef() as RefObject<HTMLInputElement>;
     const refTitle = useRef() as RefObject<HTMLInputElement>;
@@ -42,14 +112,51 @@ const Profile: NextPage<ProfileProps> = ({
     const refBirthdate = useRef() as RefObject<HTMLInputElement>;
     const refCourses = useRef() as RefObject<HTMLInputElement>;
 
-    const updateProfile = (): void => {
-        setName(refName.current?.value ? refName.current.value : Person.name);
-        setTitle(refTitle.current?.value ? refTitle.current.value : Person.title);
-        setDescription(refDescription.current?.value ? refDescription.current.value : Person.description);
-        setBirthdate(refBirthdate.current?.value ? refBirthdate.current.value : Person.birthdate);
-        setCourses(refCourses.current?.value ? refCourses.current.value : Person.courses);
+    const canEdit = username && sessionStorage.getItem('username') === username
 
+    const updateProfile = (): void => {
+        // setName(refName.current?.value ? refName.current.value : Person.name);
+        // setTitle(refTitle.current?.value ? refTitle.current.value : Person.title);
+        // setDescription(refDescription.current?.value ? refDescription.current.value : Person.description);
+        // setBirthdate(refBirthdate.current?.value ? refBirthdate.current.value : Person.birthdate);
+        // setCourses(refCourses.current?.value ? refCourses.current.value : Person.courses);
         setIsEditing(false);
+
+        const data = {
+            name: refName.current?.value || '',
+            title: refTitle.current?.value || '',
+            description: refDescription.current?.value || '',
+            birthdate: refBirthdate.current?.value || '',
+            // courses: refDescription.current?.value || '',
+        }
+
+        // console.log(data)
+
+        const url = process.env.SERVER_URL + '/api/users/edit/';
+        const request = new Request(url, {
+            method: 'post', 
+            body: JSON.stringify(data),
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+        });
+        
+        const response = fetch(request)
+        .then(async function(res) {
+
+            if (!res.ok) {
+                console.log(res)
+                return false
+            }
+
+            const resBody = await res.json()
+
+            getUserData()
+
+        }).catch((error) => {
+            console.log(error)
+        })
     }
 
     return (
@@ -61,14 +168,14 @@ const Profile: NextPage<ProfileProps> = ({
                     {!isEditing ? (
                     <>
                         <Column>
-                            <Name bold={true} size="h3">{name}</Name>
-                            <Title bold={true} size="h6" color={MainTheme.colors.text} >{title}</Title>
-                            <Heading size="small" >{description}</Heading>
+                            <Name bold={true} size="h3">{userData.name || ''}</Name>
+                            <Title bold={true} size="h6" color={MainTheme.colors.text} >{userData.title || ''}</Title>
+                            <Heading size="small" >{userData.description || ''}</Heading>
                         </Column>
                         <Column>
-                            <LabelText label="Birthdate" >{birthdate}</LabelText>
-                            <LabelText label="Reviews" >{Person.reviews}</LabelText>
-                            <LabelText label="Past Courses">{courses}</LabelText>
+                            <LabelText label="Birthdate" >{userData.birthdate || ''}</LabelText>
+                            {/* <LabelText label="Reviews" >{userData.reviews}</LabelText> */}
+                            {/* <LabelText label="Past Courses">{userData.courses}</LabelText> */}
                         </Column>
                     </>
                     ) : (
@@ -80,18 +187,19 @@ const Profile: NextPage<ProfileProps> = ({
                         </Column>
                         <Column>
                             <Input inputRef={refBirthdate} label="Birthdate" placeholder='Birthdate...' />
-                            <Input inputRef={refCourses} label="Courses" placeholder='Courses...' />
+                            {/* <Input inputRef={refCourses} label="Courses" placeholder='Courses...' /> */}
                             <Button onClick={() => updateProfile()}>Submit Changes</Button>
                         </Column>
                     </>
                     )}
                 </ProfileInfo>
-                {!isEditing && <EditProfileButton onClick={() => setIsEditing(true)} >Edit Profile</EditProfileButton>}
+                {canEdit && !isEditing && <EditProfileButton onClick={() => setIsEditing(true)} >Edit Profile</EditProfileButton>}
             </ProfileContainer>
             <CommentHistory>
-                <ProfileComment />
-                <ProfileComment />
-                <ProfileComment />
+                
+                {comments.map((comment: CommentData, i: number) => (
+                    <ProfileComment comment={comment}/>
+                ))}
             </CommentHistory>
         </PageContainer>
     );
