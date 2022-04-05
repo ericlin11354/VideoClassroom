@@ -57,14 +57,14 @@ const Catalogue: NextPage<CatalogueProps> = ({
     }, [searchTerm, sortTerm, filterTerm, isLoggedIn, isAdmin, videos])
     
     useEffect(() => {
-        getVideosFromDB(videoList);
+        getVideosFromDB();
     }, [isLoggedIn, isAdmin])
 
     const displayVideos = (): React.ReactNode[] => {
         // console.log('displayVideos:', videos);
         return (
             displayedVideos.map((video, index) => 
-                ((video.visibility != 'TAProfs' && isLoggedIn) || isAdmin) && <VideoRow key={index} video={video} removeClick={() => removeVideo(index)}/>
+                ((video.visibility != 'TAProfs' && isLoggedIn) || isAdmin) && <VideoRow key={index} video={video} removeClick={() => removeVideoFromDB(index)}/>
             )
         )
     };
@@ -221,7 +221,7 @@ const Catalogue: NextPage<CatalogueProps> = ({
             } else {
                 console.log('Could not delete video')
             }
-            console.log(res)  // log the result in the console for development purposes,
+            // console.log(res)  // log the result in the console for development purposes,
                               //  users are not expected to see this.
         }).catch((error) => {
             console.log(error)
@@ -264,7 +264,6 @@ const Filters = styled.div`
 const PageContainer = styled.div`
     position: fixed;
     display: flex;
-    overflow-y: scroll;
     flex-direction: column;
     align-items: center;
     min-width: 800px;
@@ -277,6 +276,7 @@ const VideoList = styled.div`
     flex-direction: column;
     row-gap: 10px;
     overflow: auto;
+    max-height: 70%;
 
     
     &::-webkit-scrollbar {
