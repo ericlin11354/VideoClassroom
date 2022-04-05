@@ -9,18 +9,7 @@ const log = console.log
 
 const { mongoChecker } = require('./helpers/mongo_helpers')
 
-const getRootComment = async (comment) => {
-    const getParent = (target) => {
-        return Comment.findById(target.parent);
-    }
-
-    let root = comment
-    while (root.parent && root.parent !== '') {
-        root = await getParent(root)
-    }
-
-    return root
-}
+const { getRootComment, deleteComment } = require('./helpers/comment_helper')
 
 /* 
 Create a new comment
@@ -35,7 +24,7 @@ router.post('/:id', mongoChecker, async (req, res) => {
     const vid = req.params.id
 
     let username = req.session.username
-    
+
     // log(req.body.username)
     if (!username || username === ''){
         res.status(401).send('Must be logged in to comment')
@@ -130,19 +119,19 @@ router.get('/videoComments/:id', mongoChecker, async (req, res) => {
 /* 
 Get all comments of a user
 */
-router.get('/userComments/:id', mongoChecker, async (req, res) => {
-    const uid = req.params.id
+router.get('/userComments/:username', mongoChecker, async (req, res) => {
+    const username = req.params.username
 
 	try {
-        const user = await User.findById(uid)
+        const user = await User.findUser(username)
         if (!user) {
             res.status(400).send('User does not exist')
             return
         }
         
-		const comments = await Comment.findByUser(user.get(''))
+		const comments = await Comment.findByUser(username)
 
-        res.send(comments)
+        res.send({comments: comments})
 
 	} catch (error) {
         log(error)
@@ -177,24 +166,6 @@ router.delete('/:id', mongoChecker, async (req, res) => {
             let root = await getRootComment(comment)
             answerId = root.get('answer')
 
-            const deleteComment = async (target) => {
-                for (const childID of target.children) {
-                    const child = await Comment.findById(childID);
-                    deleteComment(child)
-                }
-                if (answerId == target._id){
-                    answerId = ''
-                    root.set('answer', undefined)
-                    root.save()
-                }
-                await Comment.findByIdAndRemove(target._id);
-            }
-
-            if (comment.get('parent') !== ''){
-                const parentComment = await Comment.findById(comment.get('parent'))
-                parentComment.children.splice(parentComment.get('children').indexOf(cid), 1)
-                await parentComment.save()
-            }
             await deleteComment(comment)
 
             res.status(200).send()

@@ -31,13 +31,12 @@ export const VideoRow: React.FC<VideoRowProps> = ({
     };
 
     const moveToVideo = (e: React.MouseEvent<HTMLElement>): void => {
-        //TODO: replace hardcoding
 
         router.replace({
             pathname: '/video',
             query: 
             {
-                vid: video._id
+                vid: video._id || video.video_id
             },
         })
     };

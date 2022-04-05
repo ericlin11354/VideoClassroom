@@ -69,7 +69,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             console.log(error)
         })
         
-    })
+    }, [vid])
 
     useEffect(() => {
         if (vidRef && vidRef.current){

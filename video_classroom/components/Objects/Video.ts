@@ -9,6 +9,7 @@ export interface Video {
     video_len: string;
     // thumbnail: CustomFile | undefined;
     video_id: string;
+    _id: string;
     video_url: string;
     status: {
         professor_answered?: boolean;
@@ -16,4 +17,5 @@ export interface Video {
         unresolved_answers?: boolean;
     };
     visibility: 'Everyone' | 'TAProfs';
+    uploader: string;
 }
