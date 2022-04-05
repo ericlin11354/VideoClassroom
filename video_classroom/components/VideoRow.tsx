@@ -17,6 +17,8 @@ import Input from './Input';
 import CheckBox from './CheckBox';
 // import { updateVideoFromDB } from '../scripts/video_script';
 
+const log = console.log
+
 export interface VideoRowProps extends React.HTMLAttributes<HTMLDivElement> {
     video: Video;
     removeClick: React.MouseEventHandler;

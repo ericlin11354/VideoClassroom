@@ -274,7 +274,7 @@ const CommentButton = styled.button<{}>`
 
 const CommenterContainer = styled.div<{isOpen: boolean}>`
 	position: relative;
-    background-color: grey;
+    // background-color: grey;
     left: 20px;
     width: calc(100% - 50px);
     margin: 5px;
