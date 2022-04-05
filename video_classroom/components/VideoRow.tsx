@@ -91,8 +91,8 @@ export const VideoRow: React.FC<VideoRowProps> = ({
                 <Counter bold={true} icon={Eye} >{video.num_likes}</Counter>
                 <Counter bold={true} icon={ChatLeft} >{video.num_comments}</Counter>
                 <DateHeading size="small" >{moment(video.date).format('MM/DD/YYYY')}</DateHeading>
-                {isUserAdmin() && <Button tip='Edit Video' icon={Edit} onClick={() => setIsEditing(true)} />}
-                {isUserAdmin() && <Button tip='Delete Video' onClick={removeClick} icon={Close} />}
+                {isUserAdmin() && <StyledButton tip='Edit Video' icon={Edit} onClick={() => setIsEditing(true)} />}
+                {isUserAdmin() && <StyledButton tip='Delete Video' onClick={removeClick} icon={Close} />}
             </>) : <>
                 <Input inputRef={refTitle} label='Title' placeholder='Title...' />
                 <Input inputRef={refDesc} label='Description' placeholder='Description...' />
@@ -104,6 +104,12 @@ export const VideoRow: React.FC<VideoRowProps> = ({
     )
 };
 
+const StyledButton = styled(Button)`
+    display: flex;
+    height: 50%;
+    align-items: center;
+`;
+
 const DateHeading = styled(Heading)`
     display: flex;
     align-items: center;
@@ -112,6 +118,7 @@ const DateHeading = styled(Heading)`
 const DescriptionHeading = styled(Heading)`
     margin: 0 0 0 5px;
     overflow: hidden;
+    height: 100%;
 `;
 
 const PermissionsHeading = styled(Heading)`
@@ -136,7 +143,8 @@ const StatusHeading = styled(Heading)`
 const StyledDiv = styled.div`
     display: flex;
     flex-direction: row;
-    height: 70px;
+    align-items: center;
+    height: 100px;
     border: 1px solid ${MainTheme.colors.stroke};
     padding: 5px;
     width: 100%;
@@ -175,6 +183,7 @@ const Thumbnail = styled.img`
 const ThumbnailContainer = styled.div`
     position: relative;
     width: 10%;
+    height: 100%;
     cursor: pointer;
 `;
 

@@ -70,7 +70,7 @@ const CatalogueContainer = styled.div`
     display: flex; 
     flex-direction: column;
     row-gap: 10px;
-    width: 80%;
+    width: 90%;
     margin: 100px 0 0 10px;
     height: 100%;
 

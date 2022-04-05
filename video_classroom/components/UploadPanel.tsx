@@ -65,14 +65,25 @@ export const UploadPanel: React.FC<UploadPanelProps> = ({
             }}></input> */}
             <CheckBox inputRef={refVisibility} label="Visible for TAs and Professors only" />
             {/* <Button onClick={handleSubmit}>Submit</Button> */}
-            <form onSubmit={handleSubmit}>
+            <StyledSmallText>Video file</StyledSmallText>
+            <StyledForm onSubmit={handleSubmit}>
                 <input ref={refSRC} name='image' type="file" />
                 <Button >Submit</Button>
-            </form>
+            </StyledForm>
             <SmallText color={isInputValid ? 'green' : 'red'} >{statusText}</SmallText>
             
         </UploadFrame>
 )};
+
+const StyledForm = styled.form`
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+`;
+
+const StyledSmallText = styled(SmallText)`
+    margin: 0 0 -5px 0;
+`;
 
 const UploadFrame = styled.div`
     padding: 5px;
