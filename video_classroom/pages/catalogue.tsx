@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import { getVideosFromDB, removeVideoFromDB } from '../scripts/video_script';
+// import {  removeVideoFromDB } from '../scripts/video_script';
 import { 
     Input,
     NavBar,
@@ -69,20 +69,20 @@ const Catalogue: NextPage<CatalogueProps> = ({
         )
     };
 
-    const removeVideo = (index: number) => {
-        const temp = [...videos];
-        // const temp2 = [...currentVideos];
-        // const index2 = temp2.indexOf(temp[index]);
+    // const removeVideo = (index: number) => {
+    //     const temp = [...videos];
+    //     // const temp2 = [...currentVideos];
+    //     // const index2 = temp2.indexOf(temp[index]);
 
-        // console.log(temp[index]);
-        const video = temp[index] as any;
-        console.log('removing', video['video_id']);
-        removeVideoFromDB(video['video_id']);
-        temp.splice(index, 1);
-        // console.log(removed);
-        setVideos([...temp]);
-        setCurrentVideos([...temp]);
-    }
+    //     // console.log(temp[index]);
+    //     const video = temp[index] as any;
+    //     console.log('removing', video['video_id']);
+    //     removeVideoFromDB(video['video_id']);
+    //     temp.splice(index, 1);
+    //     // console.log(removed);
+    //     setVideos([...temp]);
+    //     setCurrentVideos([...temp]);
+    // }
 
     const searchVideos = (searchTitle: string, videoList: any) => {
         // console.log(searchTitle);
@@ -172,6 +172,62 @@ const Catalogue: NextPage<CatalogueProps> = ({
         setCurrentVideos([...temp]);
     };
 
+    const getVideosFromDB = () => {
+        const url = `/api/catalogue/`;
+    
+        // Since this is a GET request, simply call fetch on the URL
+        fetch(url)
+        .then(res => {
+            if (res.status === 200) {
+                // return a promise that resolves with the JSON body
+                return res.json();
+            } else {
+                console.log("Could not get videos");
+            }
+        })
+        .then(json => {
+            // // the resolved promise with the JSON body
+            // studentList.setState({ studentList: json.students });
+            // console.log('json', json);
+            setVideos(json.videos);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    }
+
+    const removeVideoFromDB = (index: number) => {
+        const temp = [...videos];
+
+        const video = temp[index] as any;
+        console.log('removing', video['video_id']);
+
+        const url = `/api/catalogue/${video['video_id']}`;
+        const request = new Request(url, {
+            method: 'delete', 
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+    
+        fetch(request)
+        .then(function(res) {
+    
+            if (res.status === 200) {
+                console.log('Successfully deleted video')
+                temp.splice(index, 1);
+                setVideos([...temp]);
+                setCurrentVideos([...temp]);
+            } else {
+                console.log('Could not delete video')
+            }
+            console.log(res)  // log the result in the console for development purposes,
+                              //  users are not expected to see this.
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
+
     return (
         <PageContainer>
             <NavBar addVideo={addVideo} />
@@ -194,19 +250,8 @@ const CatalogueContainer = styled.div`
     flex-direction: column;
     row-gap: 10px;
     width: 80%;
-    margin: 100px 0 0 10px;
+    margin: 30px 0 10px;
     height: 100%;
-
-    &::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-        background-color: #efefef;
-
-        &-thumb {
-            background-color: rgba(0,0,0,0.2);
-            border-radius: 999px;
-        }
-    }
 `;
 
 const Filters = styled.div`
@@ -231,6 +276,19 @@ const VideoList = styled.div`
     display: flex;
     flex-direction: column;
     row-gap: 10px;
+    overflow: auto;
+
+    
+    &::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+        background-color: #efefef;
+
+        &-thumb {
+            background-color: rgba(0,0,0,0.2);
+            border-radius: 999px;
+        }
+    }
 `;
 
 export default Catalogue;

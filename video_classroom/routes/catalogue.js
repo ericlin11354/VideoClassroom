@@ -29,8 +29,8 @@ function isMongoError(error) { // checks for first error returned by promise rej
 }
 
 router.post('/', multipartMiddleware, (req, res) => {
-	console.log(req)
-	console.log('abs path', req.body, req.files)
+	// console.log(req)
+	// console.log('abs path', req.body, req.files)
     // check mongoose connection established.
 	if (mongoose.connection.readyState != 1) {
 		log('Issue with mongoose connection')
@@ -44,6 +44,8 @@ router.post('/', multipartMiddleware, (req, res) => {
 		function(error, result) {
 
 			console.log('cloudinary upload:', error, result)
+			if (error)
+				res.status(400).send(error)
 
 			const getTimeMinutes = () => {
 				const minutes = Math.floor(result.duration / 60);
@@ -55,7 +57,6 @@ router.post('/', multipartMiddleware, (req, res) => {
 				title: req.body.title,
 				description: req.body.description,
 				video_len: getTimeMinutes(),
-				thumbnail: '',
 				video_id: result.public_id,
 				video_url: result.url,
 				visibility: req.body.visibility,

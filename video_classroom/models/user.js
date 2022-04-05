@@ -31,6 +31,7 @@ const UserSchema = new mongoose.Schema({
 			return this.permission === 'user' || this.permission === 'admin';
 		}
 	},
+	picture: { type: String }
 })
 
 UserSchema.statics.findUser = function(username) {
