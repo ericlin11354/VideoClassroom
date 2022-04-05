@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { useEffect, useRef, useState } from "react";
 import Select from "./Select";
 import { useRouter } from "next/router";
-import Cookies from 'universal-cookie';
 import { isUserLoggedIn } from "../helpers/permHelper";
 
 const log = console.log
@@ -115,9 +114,6 @@ export const LoginPanel: React.FC<LoginPanelProps> = ({
         }).catch((error) => {
             console.log(error)
         })
-
-        const cookies = new Cookies();
-        cookies.set("username", UN, {path: "/"});
 
         // console.log(isUserLoggedIn())
 

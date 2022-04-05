@@ -7,6 +7,18 @@ const log = console.log
 const { mongoChecker } = require('./helpers/mongo_helpers')
 const { getRootComment, deleteComment } = require('./helpers/comment_helper')
 
+// multipart middleware: allows you to access uploaded file from req.file
+const multipart = require('connect-multiparty');
+const multipartMiddleware = multipart();
+
+// cloudinary: configure using credentials found on your Cloudinary Dashboard
+// sign up for a free account here: https://cloudinary.com/users/register/free
+const cloudinary = require('cloudinary');
+cloudinary.config({
+    cloud_name: 'dqdagc8tg',
+    api_key: '214252355416824',
+    api_secret: '4V6GAZL1un-RSElUrI_dsURv2GI'
+});
 
 // const bodyParser = require('body-parser')
 // router.use(bodyParser.json())
@@ -37,6 +49,8 @@ router.post('/', mongoChecker, async (req, res) => {
             username: req.body.username,
             password: req.body.password,
             permission: req.body.permission,
+            image_id: 'Blank-Profile-Image_m3msu6',
+            image_url: 'https://res.cloudinary.com/dqdagc8tg/image/upload/v1649200915/Blank-Profile-Image_m3msu6.png'
         })
 
 		const newUser = await user.save()
@@ -144,7 +158,11 @@ Body should be of the following format:
 */
 // not sure why, but a patch request always returned a 400 without entering this route,
 // so I'm using post instead
-router.post('/edit/', mongoChecker, async (req, res) => {
+router.post('/edit/', mongoChecker, multipartMiddleware, async (req, res) => {
+    // log(req);
+    log('body', req.body)
+    log('session', req.session)
+    log('files', req.files);
 	const username = req.session.username
 
     try {
@@ -159,9 +177,23 @@ router.post('/edit/', mongoChecker, async (req, res) => {
                 }
             }
 
-			user.save()
-            req.session.username = user.get('username')
-            res.status(200).json(user)
+            cloudinary.v2.uploader.upload(
+                req.files.image.path,
+                { resource_type: 'image' },
+                function(error, result) {
+                    if (error)
+                        res.status(400).send(error)
+
+                    console.log('lets set image')
+                    console.log(result.public_id, result.url)
+                    user.set('image_id', result.public_id)
+                    user.set('image_url', result.url)
+
+                    user.save()
+                    req.session.username = user.get('username')
+                    res.status(200).json(user)
+                }
+            )
         }
     } catch (error) {
         log(error)

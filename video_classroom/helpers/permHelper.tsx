@@ -1,6 +1,5 @@
 import { ContentPasteSearchOutlined } from "@mui/icons-material";
 import router from "next/router";
-import Cookies from "universal-cookie";
 
 export const isUserLoggedIn = (): boolean =>  {
 

@@ -98,7 +98,7 @@ export const UploadPanel: React.FC<UploadPanelProps> = ({
             {/* <Button onClick={handleSubmit}>Submit</Button> */}
             <StyledSmallText>Video file</StyledSmallText>
             <StyledForm onSubmit={handleSubmit}>
-                <input ref={refSRC} name='image' type="file" />
+                <input ref={refSRC} name='image' type="file" accept="video/*" />
                 <StyledButton >Submit</StyledButton>
             </StyledForm>
             <SmallText color={isInputValid ? 'green' : 'red'} >{statusText}</SmallText>
