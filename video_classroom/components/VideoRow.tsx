@@ -37,7 +37,7 @@ export const VideoRow: React.FC<VideoRowProps> = ({
             pathname: '/video',
             query: 
             {
-                vid: 'cat.mp4'
+                vid: video._id
             },
         })
     };
