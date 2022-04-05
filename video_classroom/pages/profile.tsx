@@ -209,7 +209,7 @@ const Profile: NextPage<ProfileProps> = ({
             <CommentHistory>
                 
                 {comments.map((comment: CommentData, i: number) => (
-                    <ProfileComment comment={comment}/>
+                    <ProfileComment key={comment.id} comment={comment}/>
                 ))}
             </CommentHistory>
         </PageContainer>
