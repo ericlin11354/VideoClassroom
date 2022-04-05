@@ -241,7 +241,7 @@ export const Commenter: React.FC<CommenterProps> = ({
             <Button onClick={toggleCommenter} tip={'Comment'} icon={ChatBubbleOutline} {...buttonStyleProps}></Button>
             {isAdmin && parentComment && <Button tip={'Delete'} onClick={deleteComment} icon={Delete} {...buttonStyleProps}></Button>}
             {isAdmin && parentComment && parentComment.parent && <Button tip={'Mark Comment'} onClick={markComment} icon={questionAnswered && StarFill || Star} {...buttonStyleProps}></Button>}
-            {(!parentComment || parentComment.replies.length > 0) && parentComment && <Button tip={'See Replies'} onClick={toggleReplies} icon={isRepliesOpen && EyeFill || Eye} {...buttonStyleProps}></Button>}
+            {(!parentComment || parentComment.replies.length > 0) && parentComment && <Button tip={'Expand'} onClick={toggleReplies} icon={isRepliesOpen && EyeFill || Eye} {...buttonStyleProps}></Button>}
             <CommenterContainer isOpen={isCommenterOpen} {...props}>
                 <FormBox ref={formRef}/>
                 <SubmitButton onClick={addComment}>Submit</SubmitButton>

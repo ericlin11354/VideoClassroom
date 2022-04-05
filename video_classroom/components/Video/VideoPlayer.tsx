@@ -23,7 +23,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 	...props
 }): React.ReactElement => {
 
-    const vidSrc = 'cat.mp4'
+    const [videoData, setVideoData] = useState<any>(undefined);
 
     const [videoTime, setVideoTime] = useState<number>(0);
     const [videoMaxTime, setVideoMaxTime] = useState<number>(0);
@@ -44,6 +44,32 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 	}
 
 	const vidRef = useRef<HTMLVideoElement>(null);
+    useEffect(() => {
+
+        const url = process.env.SERVER_URL + '/api/catalogue/' + vid;
+        const request = new Request(url, {
+            method: 'get', 
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+        });
+        
+        const response = fetch(request)
+        .then(async function(res) {
+            if (!res.ok) {
+                return false
+            }
+
+            const resBody = await res.json()
+
+            setVideoData(resBody.video)
+
+        }).catch((error) => {
+            console.log(error)
+        })
+        
+    })
 
     useEffect(() => {
         if (vidRef && vidRef.current){
@@ -90,7 +116,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             <VideoChatFrame>
                 <VideoPlayerFrame>
                     <VideoViewport ref={vidRef} width="100%" height="100%">
-                        <source src={vidSrc} type="video/mp4"></source>
+                        {videoData && <source src={videoData.video_url} type="video/mp4"></source>}
                     </VideoViewport>
                     <VideoBarContainer>
                         <VideoBar videoInfo={videoInfo}></VideoBar>
