@@ -105,3 +105,36 @@ export function removeVideoFromDB(id) {
         log(error)
     })
 }
+
+export function updateVideoFromDB(video) {
+    const url = `/api/catalogue/${video['video_id']}`;
+
+    // [
+    //     { "op": "replace", "path": "/baz", "value": "boo" },
+    //     { "op": "add", "path": "/hello", "value": ["world"] },
+    //     { "op": "remove", "path": "/foo" }
+    //   ]
+
+    // console.log(JSON.stringify(data))
+
+    const request = new Request(url, {
+        method: 'put',
+        body: JSON.stringify(video),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    console.log('lets fetch')
+    fetch(request)
+    .then(function(res) {
+        if (res.status === 200) {
+            // return a promise that resolves with the JSON body
+            return res.json();
+        } else {
+            console.log("Could not update video");
+        }
+        log(res)
+    }).catch((error) => {
+        log('patch request error:', error)
+    })
+}

@@ -1,5 +1,5 @@
 import { Button } from './Button';
-import { Heading } from './Text';
+import { Heading, SmallText } from './Text';
 import { ChatLeft } from '@styled-icons/bootstrap/ChatLeft';
 import { Close } from '@styled-icons/evaicons-solid/Close';
 import { Counter } from './Counter';
@@ -8,11 +8,14 @@ import { Eye } from '@styled-icons/bootstrap/Eye';
 import { Edit } from '@styled-icons/boxicons-regular/Edit';
 import { MainTheme } from '../styles/MainTheme';
 import moment from "moment";
-import React from 'react';
+import React, { RefObject, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Video } from '../components/Objects/Video';
 import router from 'next/router';
 import { isUserAdmin } from '../helpers/permHelper';
+import Input from './Input';
+import CheckBox from './CheckBox';
+import { updateVideoFromDB } from '../scripts/video_script';
 
 export interface VideoRowProps extends React.HTMLAttributes<HTMLDivElement> {
     video: Video;
@@ -24,6 +27,13 @@ export const VideoRow: React.FC<VideoRowProps> = ({
     removeClick = () => null,
     ...props
 }): React.ReactElement => {
+
+    const [isEditing, setIsEditing] = useState(false);
+    const [statusText, setStatusText] = useState('');
+    const refTitle = useRef() as RefObject<HTMLInputElement>;
+    const refDesc = useRef() as RefObject<HTMLInputElement>;
+    const refVisibility = useRef() as RefObject<HTMLInputElement>;
+
     const displayVisibility = (perms: string): string => {
         if (perms == 'Everyone')
             return 'Visible to everyone in class';
@@ -41,6 +51,21 @@ export const VideoRow: React.FC<VideoRowProps> = ({
         })
     };
 
+    const handleSubmit = (): void => {
+        if (refTitle.current?.value === '' || refDesc.current?.value === '' ) {
+            setStatusText('Missing Required Fields');
+        }
+        else {
+            video.title = refTitle.current?.value ? refTitle.current.value : ''
+            video.description = refDesc.current?.value ? refDesc.current.value : ''
+            video.visibility = refVisibility.current?.checked ? 'TAProfs' : 'Everyone'
+            // updateVideoFromDB(video.video_id, refTitle.current?.value, refDesc.current?.value, refVisibility.current?.checked);
+            console.log('video', video);
+            updateVideoFromDB(video);
+            setIsEditing(false);
+        }
+    }
+
     const getThumbnail = () => 
         video.video_url.slice(0, video.video_url.lastIndexOf('.')) + '.png';
 
@@ -50,24 +75,39 @@ export const VideoRow: React.FC<VideoRowProps> = ({
                 <Thumbnail src={getThumbnail()} />
                 <TimeStamp>{video.video_len}</TimeStamp>
             </ThumbnailContainer>
-            <TextContainer>
-                <TitleHeading size="h6" >{video.title}</TitleHeading>
-                <DescriptionHeading size="small" color={MainTheme.colors.subtext} >{video.description}</DescriptionHeading>
-            </TextContainer>
-            <StatusContainer>
-                {video.status.professor_answered && <StatusHeading italic={true} size="small" color={MainTheme.status.professor} >Professor Answered</StatusHeading>}
-                {video.status.student_answered && <StatusHeading italic={true} size="small" color={MainTheme.status.student} >Student Answered</StatusHeading>}
-                {video.status.unresolved_answers && <StatusHeading italic={true} size="small" color={MainTheme.status.unresolved} >Unresolved Answer(s)</StatusHeading>}
-            </StatusContainer>
-            <PermissionsHeading size="small" bold={true} italic={true} >{displayVisibility(video.visibility)}</PermissionsHeading>
-            <Counter bold={true} icon={Eye} >{video.num_likes}</Counter>
-            <Counter bold={true} icon={ChatLeft} >{video.num_comments}</Counter>
-            <DateHeading size="small" >{moment(video.date).format('MM/DD/YYYY')}</DateHeading>
-            {isUserAdmin() && <Button icon={Edit} />}
-            {isUserAdmin() && <Button onClick={removeClick} icon={Close} />}
+            {!isEditing ?    
+            (<>
+                <TextContainer>
+                    <TitleHeading size="h6" >{video.title}</TitleHeading>
+                    <DescriptionHeading size="small" color={MainTheme.colors.subtext} >{video.description}</DescriptionHeading>
+                </TextContainer>
+                <StatusContainer>
+                    {video.status.professor_answered && <StatusHeading italic={true} size="small" color={MainTheme.status.professor} >Professor Answered</StatusHeading>}
+                    {video.status.student_answered && <StatusHeading italic={true} size="small" color={MainTheme.status.student} >Student Answered</StatusHeading>}
+                    {video.status.unresolved_answers && <StatusHeading italic={true} size="small" color={MainTheme.status.unresolved} >Unresolved Answer(s)</StatusHeading>}
+                </StatusContainer>
+                <PermissionsHeading size="small" bold={true} italic={true} >{displayVisibility(video.visibility)}</PermissionsHeading>
+                <Counter bold={true} icon={Eye} >{video.num_likes}</Counter>
+                <Counter bold={true} icon={ChatLeft} >{video.num_comments}</Counter>
+                <DateHeading size="small" >{moment(video.date).format('MM/DD/YYYY')}</DateHeading>
+                {isUserAdmin() && <StyledButton tip='Edit Video' icon={Edit} onClick={() => setIsEditing(true)} />}
+                {isUserAdmin() && <StyledButton tip='Delete Video' onClick={removeClick} icon={Close} />}
+            </>) : <>
+                <Input inputRef={refTitle} label='Title' placeholder='Title...' />
+                <Input inputRef={refDesc} label='Description' placeholder='Description...' />
+                <CheckBox inputRef={refVisibility} label='Visible for TAs and Professors only' />
+                <Button tip='Submit Edit' onClick={handleSubmit} >Submit Edit </Button>
+                <SmallText color='red' >{statusText}</SmallText>
+            </> }
         </StyledDiv>
     )
 };
+
+const StyledButton = styled(Button)`
+    display: flex;
+    height: 50%;
+    align-items: center;
+`;
 
 const DateHeading = styled(Heading)`
     display: flex;
@@ -77,6 +117,7 @@ const DateHeading = styled(Heading)`
 const DescriptionHeading = styled(Heading)`
     margin: 0 0 0 5px;
     overflow: hidden;
+    height: 100%;
 `;
 
 const PermissionsHeading = styled(Heading)`
@@ -101,7 +142,8 @@ const StatusHeading = styled(Heading)`
 const StyledDiv = styled.div`
     display: flex;
     flex-direction: row;
-    height: 70px;
+    align-items: center;
+    height: 100px;
     border: 1px solid ${MainTheme.colors.stroke};
     padding: 5px;
     width: 100%;
@@ -140,6 +182,8 @@ const Thumbnail = styled.img`
 const ThumbnailContainer = styled.div`
     position: relative;
     width: 10%;
+    height: 100%;
+    cursor: pointer;
 `;
 
 export default VideoRow;
