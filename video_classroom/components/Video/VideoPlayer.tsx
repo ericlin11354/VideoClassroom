@@ -128,17 +128,17 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
             </VideoChatFrame>
             <DescFrame>
                 <TextRow>
-                    <TitleItem>{videoData.title}</TitleItem>
+                    <TitleItem>{videoData && videoData.title || 'Hello World'}</TitleItem>
                 </TextRow>
                 {/* <TextRow>
                     <DescItem>Part of {courseName}</DescItem>
                 </TextRow> */}
                 {/* <TextRow>
                     <DescItem>Submitted by {submitterUN} on {submitTime.toDate().toDateString()}</DescItem>
-                </TextRow> */}
-                    <br/>
+                </TextRow>
+                    <br/> */}
                 <TextRow>
-                    <DescItem>{videoData.description}</DescItem>
+                    <DescItem>{videoData && videoData.description || ''}</DescItem>
                 </TextRow>
             </DescFrame>
         </VideoChatDescFrame>
