@@ -132,8 +132,8 @@ export const Users: React.FC<UsersProps> = ({
         return (
             displayedUsers.map((user: any, index: number) => 
                 (
-                    <StyledDiv>
-                        <SmallText children={user.username}/>
+                    <StyledDiv key={user.username}>
+                        <SmallText> {user.username} </SmallText>
                         <StyledButton iconSize={'20px'} tip='View Profile' icon={Eye} onClick={getViewUser(user)}> </StyledButton>
                         {isAdmin && <StyledButton iconSize={'20px'} tip='Delete User' icon={Close} onClick={getDeleteUser(user)}> </StyledButton>}
                     </StyledDiv>
