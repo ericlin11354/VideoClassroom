@@ -24,7 +24,7 @@ export const Button: React.FC<ButtonProps> = ({
     contentColor = 'black',
     iconSize = '14px',
     children,
-    tip = 'Hello World',
+    tip = '',
     ...props
 }): React.ReactElement => (
         <StyledButton 
@@ -53,6 +53,7 @@ const WrapperWrapper = styled.div`
     height: 100%;
     display: flex;
     align-items: center;
+    justify-content: center;
     padding: ${MainTheme.dimensions.padding.withBorder};
 `
 
@@ -84,5 +85,5 @@ const Icon = styled.svg<IconProps>`
         height: ${iconSize};
         width: ${iconSize};
     `}
-    margin-right: ${({ hasChildren }): number => (hasChildren ? 8 : 0)}px;
+    // margin-right: ${({ hasChildren }): number => (hasChildren ? 8 : 0)}px;
 `;
