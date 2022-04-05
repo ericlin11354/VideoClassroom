@@ -11,6 +11,11 @@ import {ChatBubbleOutline} from '@styled-icons/material-outlined';
 import {Delete} from '@styled-icons/fluentui-system-filled';
 import { CommentData } from "../CommentData";
 import { getUsername, isUserAdmin } from "../../helpers/permHelper";
+import { Button } from "../Button";
+
+
+// import { Upload } from '@styled-icons/boxicons-regular/Upload';
+// import { PlusCircle } from '@styled-icons/bootstrap/PlusCircle';
 
 export interface CommenterProps {
 	timestamp?: number;
@@ -221,15 +226,22 @@ export const Commenter: React.FC<CommenterProps> = ({
 
     const questionAnswered = parentComment && parentComment.getRootComment() && parentComment.getRootComment()?.answer
 
+    const buttonStyleProps = {style: 
+        {
+            margin: '4px',
+            height: '35px',
+        }
+    }
+
 	return (
         <ReplyDivider> 
             {parentComment && <NumItems>{parentComment.likes > 0 && parentComment.likes}</NumItems>}
-            {parentComment && <CommentButton onClick={likeComment}>{isLikedByUser && <HandThumbsUpFill className={'buttonIcon'} /> || <HandThumbsUp className={'buttonIcon'} />}</CommentButton>}
+            {parentComment && <Button tip={'Like'} onClick={likeComment} icon={isLikedByUser && HandThumbsUpFill || HandThumbsUp} {...buttonStyleProps}></Button>}
             <NumItems>{numComments > 0 && numComments}</NumItems>
-            <CommentButton onClick={toggleCommenter} ><ChatBubbleOutline className={'buttonIcon'} /></CommentButton>
-            {isAdmin && parentComment && <CommentButton onClick={deleteComment} ><Delete className={'buttonIcon'} /></CommentButton>}
-            {isAdmin && parentComment && parentComment.parent && <CommentButton onClick={markComment} >{questionAnswered && <StarFill className={'buttonIcon'} /> || <Star className={'buttonIcon'} />}</CommentButton>}
-            {(!parentComment || parentComment.replies.length > 0) && parentComment && <CommentButton onClick={toggleReplies} >{isRepliesOpen && <EyeFill className={'buttonIcon'} /> || <Eye className={'buttonIcon'} />}</CommentButton>}
+            <Button onClick={toggleCommenter} tip={'Comment'} icon={ChatBubbleOutline} {...buttonStyleProps}></Button>
+            {isAdmin && parentComment && <Button tip={'Delete'} onClick={deleteComment} icon={Delete} {...buttonStyleProps}></Button>}
+            {isAdmin && parentComment && parentComment.parent && <Button tip={'Mark Comment'} onClick={markComment} icon={questionAnswered && StarFill || Star} {...buttonStyleProps}></Button>}
+            {(!parentComment || parentComment.replies.length > 0) && parentComment && <Button tip={'See Replies'} onClick={toggleReplies} icon={isRepliesOpen && EyeFill || Eye} {...buttonStyleProps}></Button>}
             <CommenterContainer isOpen={isCommenterOpen} {...props}>
                 <FormBox ref={formRef}/>
                 <SubmitButton onClick={addComment}>Submit</SubmitButton>
@@ -279,7 +291,7 @@ const CommenterContainer = styled.div<{isOpen: boolean}>`
 `;
 
 const FormBox = styled.input<{}>`
-    
+    margin-right: 5px;
 `;
 
 const SubmitButton = styled.button<{}>`

@@ -17,7 +17,7 @@ import LoginPanel from './LoginPanel';
 import { UserStatusProps, Video } from './Objects';
 import router, { useRouter } from 'next/router';
 import { addVideoToDB } from '../scripts/video_script';
-import { getUsername } from '../helpers/permHelper';
+import { getUsername, isUserAdmin } from '../helpers/permHelper';
 
 export interface NavBarProps extends React.HTMLAttributes<HTMLDivElement>, UserStatusProps{
     onCourseChange?: Function;
@@ -39,9 +39,11 @@ export const NavBar: React.FC<NavBarProps> = ({
     // const { cid } = router.query;
         
     const [username, setUsername] = useState('');
+    const [isAdmin, setIsAdmin] = useState(Boolean);
     
     useEffect(() => {
         setUsername(getUsername())
+        setIsAdmin(isUserAdmin())
     })
 
     const handleLoginClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -121,11 +123,11 @@ export const NavBar: React.FC<NavBarProps> = ({
                 {/* <Button onClick={addClass} >Add Class</Button> */}
             </LeftContainer>
             <RightContainer>
-                {status == 'Admin' && <Button icon={Upload} onClick={handleUploadClick} />}
+                {isAdmin && <Button tip={'Upload Video'} icon={Upload} onClick={handleUploadClick} />}
                 {
-                    username !== '' && <Button icon={PersonCircle} onClick={() => window.location.replace("profile")} />
+                    username !== '' && <Button tip={'View Profile'} icon={PersonCircle} onClick={() => window.location.replace("profile")} />
                 }
-                <Button icon={Exit} onClick={handleLoginClick} />
+                <Button tip={'Login / Signup'} icon={Exit} onClick={handleLoginClick} />
             </RightContainer>
             <Popup isOpen={isLoginOpen} setIsOpenFunc={setIsLoginOpen}>
                 <LoginPanel></LoginPanel>
