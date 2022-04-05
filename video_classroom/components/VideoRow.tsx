@@ -15,7 +15,7 @@ import router from 'next/router';
 import { isUserAdmin } from '../helpers/permHelper';
 import Input from './Input';
 import CheckBox from './CheckBox';
-import { updateVideoFromDB } from '../scripts/video_script';
+// import { updateVideoFromDB } from '../scripts/video_script';
 
 export interface VideoRowProps extends React.HTMLAttributes<HTMLDivElement> {
     video: Video;
@@ -62,8 +62,36 @@ export const VideoRow: React.FC<VideoRowProps> = ({
             // updateVideoFromDB(video.video_id, refTitle.current?.value, refDesc.current?.value, refVisibility.current?.checked);
             console.log('video', video);
             updateVideoFromDB(video);
-            setIsEditing(false);
         }
+    }
+
+    
+    /** Replaces video in DB */
+    const updateVideoFromDB = (video: Video) => {
+        const url = `/api/catalogue/${video['video_id']}`;
+
+        const request = new Request(url, {
+            method: 'put',
+            body: JSON.stringify(video),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log('lets fetch')
+        fetch(request)
+        .then(function(res) {
+            if (res.status === 200) {
+                console.log('Successfully updated video');
+                setIsEditing(false);
+                // return a promise that resolves with the JSON body
+                return res.json();
+            } else {
+                console.log("Could not update video");
+            }
+            log(res)
+        }).catch((error) => {
+            log('patch request error:', error)
+        })
     }
 
     const getThumbnail = () => 

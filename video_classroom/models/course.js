@@ -8,17 +8,33 @@ const StatusSchema = mongoose.Schema({
 });
 
 const VideoSchema = mongoose.Schema({
-	title: { type: String },
+	title: { 
+        type: String,
+        required: true,
+        minlength: 1,
+    },
 	description: { type: String },
-    num_comments: { type: Number },
-    num_likes: { type: Number },
+    num_comments: { 
+        type: Number,
+        min: 0
+    },
+    num_likes: { 
+        type: Number,
+        min: 0
+    },
     date: { type: Date },
-    video_len: { type: String },
+    video_len: { 
+        type: String,
+        minlength: 5 // format is '00:00'
+    },
     status: StatusSchema,
-    thumbnail: { type: Object },
+    // thumbnail: { type: Object },
     video_id: { type: String },
     video_url: { type: String },
-    visibility: { type: String },
+    visibility: { 
+        type: String,
+        required: () => this.visibility === 'TAProfs' || this.visibility === 'Everyone'
+    },
     comments: { type: [String] },
 });
 
