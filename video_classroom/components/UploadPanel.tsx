@@ -26,6 +26,7 @@ export const UploadPanel: React.FC<UploadPanelProps> = ({
     const [videoFileName, setVideoFileName] = useState('');
     const [thumbnailFileName, setThumbnailFileName] = useState('');
     const [statusText, setStatusText] = useState('');
+    const [isInputValid, setIsInputValid] = useState(false);
 
     const [videoSRC, setVideoSRC] = useState<FormData>();
 
@@ -35,9 +36,12 @@ export const UploadPanel: React.FC<UploadPanelProps> = ({
         e.preventDefault();
         if (refTitle.current?.value === '' || refDesc.current?.value === '' || !refSRC.current?.value) {
             // console.log('Missing fields');
-            setStatusText('Missing fields');
+            setStatusText('Missing required fields.');
+            setIsInputValid(false);
         } else {
             console.log('Adding Video to DB');
+            setStatusText('Success! Refresh to see changes.');
+            setIsInputValid(true);
             addVideoToDB(refTitle.current?.innerText, refDesc.current?.value, refVisibility.current?.checked, e.target);
             // window.location.replace("catalogue");
         }
@@ -65,7 +69,7 @@ export const UploadPanel: React.FC<UploadPanelProps> = ({
                 <input ref={refSRC} name='image' type="file" />
                 <Button >Submit</Button>
             </form>
-            <SmallText color='red' >{statusText}</SmallText>
+            <SmallText color={isInputValid ? 'green' : 'red'} >{statusText}</SmallText>
             
         </UploadFrame>
 )};
