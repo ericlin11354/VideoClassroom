@@ -28,6 +28,7 @@ router.post('/:id', mongoChecker, async (req, res) => {
     // log(req.body.username)
     if (!username || username === ''){
         res.status(401).send('Must be logged in to comment')
+        return
     }
 
 	try {
