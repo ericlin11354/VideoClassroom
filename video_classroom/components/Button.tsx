@@ -51,15 +51,14 @@ export const Button: React.FC<ButtonProps> = ({
 const WrapperWrapper = styled.div`
     width: 100%;
     height: 100%;
+    display: flex;
+    align-items: center;
     padding: ${MainTheme.dimensions.padding.withBorder};
 `
 
 const Wrapper = styled.div`
     margin: 0;
     position: relative;
-    top: 50%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
 `
 
 const StyledButton = styled.button<ButtonProps>`
