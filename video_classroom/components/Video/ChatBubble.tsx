@@ -98,11 +98,11 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
         deleteCommentFunc: deleteCommentFunc,
         markCommentFunc: markCommentFunc,
     }
-    
+
 
 	return (
 		<ChatContainer {...props}>
-			<ProfilePic src={commentData.profilePic || "kitty-pensive.jpeg"}> 
+			<ProfilePic src={commentData.profilePic || "https://res.cloudinary.com/dqdagc8tg/image/upload/v1649200915/Blank-Profile-Image_m3msu6.png"}> 
             </ProfilePic>
 			<MsgTitle> 
                 <CommentText>

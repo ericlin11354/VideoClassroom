@@ -28,7 +28,7 @@ export const ChatBox: React.FC<VideoPlayerProps> = ({
     const [comments, setComments] = useState<Array<CommentData>>(MsgList);
     useEffect(() => {
         
-        const url = process.env.SERVER_URL + '/api/comment/videoComments/' + videoid;
+        const url = '/api/comment/videoComments/' + videoid;
         const request = new Request(url, {
             method: 'get',
             headers: {
