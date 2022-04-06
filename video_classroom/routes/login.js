@@ -184,10 +184,12 @@ router.post('/edit/', mongoChecker, multipartMiddleware, async (req, res) => {
                     if (error)
                         res.status(400).send(error)
 
-                    console.log('lets set image')
-                    console.log(result.public_id, result.url)
-                    user.set('image_id', result.public_id)
-                    user.set('image_url', result.url)
+                    if ('public_id' in obj) {
+                        // console.log('lets set image')
+                        // console.log(result.public_id, result.url)
+                        user.set('image_id', result.public_id)
+                        user.set('image_url', result.url)
+                    }
 
                     user.save()
                     req.session.username = user.get('username')
