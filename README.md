@@ -1,8 +1,169 @@
 # team18
 
-Team 18 Phase 1 Readme
 
-To run the application, do ‘npm install’ then ‘npm run dev’. You can access the webapp at ‘http://localhost:3000/’. The homepage redirects you to the catalogue, where videos will appear as soon as you are signed in. The sign in credentials are ‘user’, ‘user’ and ‘admin’, ‘admin’, for a demo user and demo admin respectively. To sign in, use the navbar.
+* Docs to Markdown version 1.0β33
+* Tue Apr 05 2022 18:55:16 GMT-0700 (PDT)
+* Source doc: Phase 2 README.md
+* Tables are currently converted to HTML tables.
+
+WARNING:
+You have 8 H1 headings. You may want to use the "H1 -> H2" option to demote all headings by one level.
+
+----->
+
+
+<p style="color: red; font-weight: bold">>>>>>  gd2md-html alert:  ERRORs: 0; WARNINGs: 1; ALERTS: 0.</p>
+<ul style="color: red; font-weight: bold"><li>See top comment block for details on ERRORs and WARNINGs. <li>In the converted Markdown or HTML, search for inline alerts that start with >>>>>  gd2md-html alert:  for specific instances that need correction.</ul>
+
+<p style="color: red; font-weight: bold">Links to alert messages:</p>
+<p style="color: red; font-weight: bold">>>>>> PLEASE check and correct alert issues and delete this message and the inline alerts.<hr></p>
+
+
+Deployed at: [https://csc309-team18.herokuapp.com/](https://csc309-team18.herokuapp.com/)
+
+
+# Instructions to run locally:
+
+
+
+1. In the root directory, run in Terminal 
+
+    ```
+$ mkdir mongo-data
+$ mongod --dbpath mongo-data
+```
+
+
+
+    This will set up the local database.
+
+2. In the root directory, run in Terminal
+
+    ```
+$ npm run build
+$ npm start
+```
+
+
+
+    This will start the production web app. You can then interact with the app at [http://localhost:5000/](http://localhost:5000/)
+
+3. Since the website uses Cloudinary, the cloud_name, api_key, and api_secret must be provided in server.js and its routes.
+
+
+# General Instructions:
+
+
+
+* Visiting the website’s homepage (‘/’), you are redirected to the catalogue page.
+* Here you see the Navbar and Filters. A person cannot view videos until they’ve logged in.
+* Clicking the top-right “Login/Signup” button raises the login panel. A person can choose to Login or Sign-up here. Username and password credentials are mandatory for login.
+* Clicking “Sign up here”, the person can create an account by creating a username + password and selecting account type.
+* Pressing the “Log in here” button allows the person to input their credentials and view videos.
+* Pressing the website logo redirects the person to the catalogue page. Here they can see videos they have access to. Furthermore, they can filter and order videos via the search bar and dropdowns.
+* Pressing the top-right “View Profile” button redirects a person to their profile page. There, a person can view their comment history and their profile information. 
+* Pressing the “Edit Profile” button, a person can change their Name, Title, About Me, Birthdate, and profile picture. Pressing “Submit Changes” updates their profile accordingly.
+* On the catalogue page, pressing a video thumbnail brings up the video page. Here, a person can access the video player to play/pause the corresponding video, adjust the volume, fullscreen, etc. 
+* Pressing the “Comment” Button, a person can write up a comment. Pressing “Submit” will post the comment, allowing other people to see it.
+* An Admin will have more features in the Navbar than a User. We further discuss this below.
+
+
+# User Functionality
+
+
+
+* Given a lot of videos, a user may search for the video they want. Additionally, they may use filters + search to find their desired video. Otherwise they can scroll through the videos.
+* A user might look at video duration, number of likes, and number of comments in order to determine if a video is worth watching.
+* A user might change their profile to correct false information or express themselves.
+* A user might adjust the volume of a video if it’s too loud. They might maximize the video for preference. They may pause a video to write notes or organize their thoughts.
+* A person might make sign-up for an account if they don’t have one. 
+* A user might post a comment if they have ideas or opinions they wish to share.
+* A user might like a post if they agree with said person’s opinion.
+* A user may use the navbar to redirect themselves to different pages. 
+
+
+# Admin Functionality
+
+
+
+* An admin might do everything a user does
+* An admin might use the “Upload a Video” button to upload a video. There they provide the video’s title, description, privacy setting, and video file. New videos have 0 comments and 0 likes.
+* An admin might use the  “Manage Users” button to manage which users have access to their course. 
+* On the users page **(can list users and admins)**, an admin might press the “View Profile” button of a specific user to learn more about them. An admin might press the “Delete User” button to revoke said user from accessing their video.
+* In order to add a user to the users page, they must be signed up as a new account. Pressing the “Add User” button allows the admin to create a new account with access to their videos.
+
+
+# New Features
+
+
+
+* User page has been added to manage, delete, and add users.
+* Video functionality works now. Thumbnails are generated based on video files.
+* Catalogue and profile page now interact with the server database and no longer require mock data.
+* Navbar only shows Login button when a person is not logged in.
+
+
+# Edited Features
+
+Due to a member dropping the course, we have cut a lot of functionality previously promised in Phase 1.
+
+
+
+* Videos no longer track whether a user, TA, or professor replied to a comment.
+* Videos no longer track the total number of likes.
+* Course structure has been removed. People can no longer enroll in a specific course. All videos on the web app are treated to be in one course.
+* Videos are scrollable so as to not go off the page.
+* Videos upload only requires user input for the title, description, privacy, and video file.
+
+
+# Libraries Used:
+
+
+
+* React – Used in rendering Front-end view and allowing interaction between clients and the page.
+* Styled – Used in Front-end to aid component styling and remove the need for CSS selectors.
+* Styled-Icons – Used in Front-end to provide visual icons for buttons.
+* Next – Framework used with React to aid server rendering and route-fetching.
+* Express – Used in Backend to create REST API methods.
+* Cloudinary – Used in Backend for video and image uploading.
+* Connect-Multiparty – Used in Backend with Cloudinary for FormData parsing.
+* Moment – Used in Frontend to provide time data for components.
+
+
+# Routes:
+
+All the backend’s routes are in /api.
+
+
+
+* /users
+    * /
+        * POST: for signing up a new user
+        * DELETE: for deleting a user
+        * GET: for getting all users’ info
+    * /login
+        * POST: for logging in as a user. Your username will be saved in the session storage.
+    * /edit
+        * POST: for editing a user’s info
+    * /:username
+        * GET: for getting the info of one user
+* /comments
+    * /:id
+        * POST: post a comment as a user
+        * GET: get a comment with the specified id
+        * DELETE: delete a comment
+    * /userComments/:username
+        * Get comments of a user
+    * /like/:id
+        * Like a comment
+    * /mark/:id
+        * Like a comment
+* /catalogue	
+    * POST: adds videos to database. Middleware reads FormData
+    * GET: gets all videos from database
+    * GET(id): gets a specific video from database given image_id
+    * DELETE: deletes a specific video given image_id
+    * PUT: replaces a video on the database given title, description, visibility. Implemented similarly to PATCH (we don’t use PATCH due to Express failing to process PATCH requests)
 
 
 
