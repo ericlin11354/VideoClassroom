@@ -175,14 +175,17 @@ export const LoginPanel: React.FC<LoginPanelProps> = ({
                 <Title>
                     Sign up
                 </Title>
-                <LineForm ref={newUsernameFormRef} type={'text'}>
+                <LineForm placeholder={'Username'} ref={newUsernameFormRef} type={'text'}>
                 </LineForm>
-                <LineForm ref={newPasswordFormRef} type={'password'}>
+                <LineForm placeholder={'Password'} ref={newPasswordFormRef} type={'password'}>
                 </LineForm>
-                <LineForm ref={confirmPasswordFormRef} type={'password'}>
+                <LineForm placeholder={'Confirm Password'} ref={confirmPasswordFormRef} type={'password'}>
                 </LineForm>
-                <Select values={['user', 'admin']} setSelected={setNewUserType}>
-                </Select>
+                <SelectFrame>
+                    Account Type: &nbsp;
+                    <Select values={['user', 'admin']} setSelected={setNewUserType}>
+                    </Select>
+                </SelectFrame>
                 <LoginButton onClick={attemptSignin}>
                     Sign up
                 </LoginButton>
@@ -203,9 +206,9 @@ export const LoginPanel: React.FC<LoginPanelProps> = ({
                 <Title>
                     Log in
                 </Title>
-                <LineForm ref={usernameFormRef} type={'text'}>
+                <LineForm placeholder={'Username'}  ref={usernameFormRef} type={'text'}>
                 </LineForm>
-                <LineForm ref={passwordFormRef} type={'password'}>
+                <LineForm placeholder={'Password'}  ref={passwordFormRef} type={'password'}>
                 </LineForm>
                 <LoginButton onClick={attemptSignin}>
                     Log in
@@ -246,6 +249,8 @@ const Switcher = styled.a<{}>`
 `;
 const LineForm = styled.input<{}>`
 `;
+const SelectFrame = styled.div<{}>`
+`
 const LoginFrame = styled.div<{}>`
     padding: 5px;
 	position: relative;

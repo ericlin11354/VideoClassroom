@@ -88,17 +88,36 @@ export const commentsMongoToClass = (mongoComments: Array<any>, pushAll?: boolea
         newComment.profilePic = element.profilePic
         console.log(element.profilePic)
 
-        if (parentComment) {
-            if (pushAll){
-                convertedComments.push(newComment)
-            }
-        } else {
-            convertedComments.push(newComment)
-        }
+        // if (parentComment) {
+        //     if (pushAll){
+        //         convertedComments.push(newComment)
+        //     }
+        // } else {
+        //     convertedComments.push(newComment)
+        // }
+        convertedComments.push(newComment)
 
     }
+
+    const finalComments = []
+    for (let i = 0; i < convertedComments.length; i++) {
+        const element = mongoComments[i]
+        const newComment: any = convertedComments[i]
+
+        const parentComment: any = convertedComments.find(ele => ele.id === element.parent)
+
+        if (pushAll){
+            finalComments.push(newComment)
+        } else {
+            if (parentComment) {
+
+            } else {
+                finalComments.push(newComment)
+            }
+        }
+    }
     
-    convertedComments.sort((a:CommentData, b:CommentData): number => {
+    finalComments.sort((a:CommentData, b:CommentData): number => {
         if (a.timestamp === b.timestamp) {
             return a.date.valueOf() - b.date.valueOf()
         } else if (a.timestamp !== undefined && b.timestamp !== undefined) {
@@ -108,7 +127,7 @@ export const commentsMongoToClass = (mongoComments: Array<any>, pushAll?: boolea
         }
     })
 
-    return convertedComments
+    return finalComments
 }
 
 export const getRootComment = (commentData: CommentData): CommentData | undefined => {
