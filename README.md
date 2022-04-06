@@ -27,7 +27,7 @@ $ npm start
 
 
 
-    This will start the production web app. You can then interact with the app at [http://localhost:5000/](http://localhost:5000/)
+This will start the production web app. You can then interact with the app at [http://localhost:5000/](http://localhost:5000/)
 
 3. Since the website uses Cloudinary, the cloud_name, api_key, and api_secret must be provided in server.js and its routes.
 
