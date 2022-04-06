@@ -181,16 +181,19 @@ router.post('/edit/', mongoChecker, multipartMiddleware, async (req, res) => {
                 req.files.image.path,
                 { resource_type: 'image' },
                 function(error, result) {
-                    if (error)
+                    if (error){
                         res.status(400).send(error)
+                    } else {
 
-                    if ('public_id' in obj) {
-                        // console.log('lets set image')
-                        // console.log(result.public_id, result.url)
-                        user.set('image_id', result.public_id)
-                        user.set('image_url', result.url)
+                        if ('public_id' in result) {
+                            // console.log('lets set image')
+                            // console.log(result.public_id, result.url)
+                            user.set('image_id', result.public_id)
+                            user.set('image_url', result.url)
+                        }
+    
                     }
-
+                    
                     user.save()
                     req.session.username = user.get('username')
                     res.status(200).json(user)
