@@ -51,7 +51,7 @@ export const NavBar: React.FC<NavBarProps> = ({
         if (username !== ''){
             //log out
 
-            const url = process.env.SERVER_URL + '/api/users/login';
+            const url = '/api/users/login';
             const data = {
                 username: '',
                 password: '',

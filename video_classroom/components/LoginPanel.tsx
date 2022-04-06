@@ -49,7 +49,7 @@ export const LoginPanel: React.FC<LoginPanelProps> = ({
         }
         //actually create the user here
         
-        const url = process.env.SERVER_URL + '/api/users/';
+        const url = '/api/users/';
         const data = {
             username: UN,
             password: PW,
@@ -82,7 +82,7 @@ export const LoginPanel: React.FC<LoginPanelProps> = ({
 
     const loginUser = (UN: string, PW: string): Promise<any> => {
 
-        const url = process.env.SERVER_URL + '/api/users/login';
+        const url = '/api/users/login';
         const data = {
             username: UN,
             password: PW,

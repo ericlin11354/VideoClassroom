@@ -40,7 +40,7 @@ const Profile: NextPage<ProfileProps> = ({
     
     const getUserData = (): void => {
         if (username){
-            const url = process.env.SERVER_URL + '/api/users/' + username;
+            const url = '/api/users/' + username;
             const request = new Request(url, {
                 method: 'get', 
                 headers: {
@@ -68,7 +68,7 @@ const Profile: NextPage<ProfileProps> = ({
     
     const getUserComments = (): void => {
         if (username){
-            const url = process.env.SERVER_URL + '/api/comment/userComments/' + username;
+            const url = '/api/comment/userComments/' + username;
             const request = new Request(url, {
                 method: 'get', 
                 headers: {
@@ -124,7 +124,7 @@ const Profile: NextPage<ProfileProps> = ({
         // setCourses(refCourses.current?.value ? refCourses.current.value : Person.courses);
         setIsEditing(false);
 
-        const url = process.env.SERVER_URL + '/api/users/edit/';
+        const url = '/api/users/edit/';
 
         const data = new FormData(e.target as HTMLFormElement)
         data.append('name', refName.current?.value || '')

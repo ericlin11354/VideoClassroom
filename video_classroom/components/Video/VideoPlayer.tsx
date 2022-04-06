@@ -46,7 +46,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
 	const vidRef = useRef<HTMLVideoElement>(null);
     useEffect(() => {
 
-        const url = process.env.SERVER_URL + '/api/catalogue/' + vid;
+        const url = '/api/catalogue/' + vid;
         const request = new Request(url, {
             method: 'get', 
             headers: {
