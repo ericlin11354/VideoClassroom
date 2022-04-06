@@ -1,6 +1,7 @@
 # team18
 
 
+
 Deployed at: [https://csc309-team18.herokuapp.com/](https://csc309-team18.herokuapp.com/)
 
 
@@ -134,12 +135,14 @@ All the backend’s routes are in /api.
         * POST: post a comment as a user
         * GET: get a comment with the specified id
         * DELETE: delete a comment
+    * /videoComments/:id
+        * Get comments of a video
     * /userComments/:username
         * Get comments of a user
     * /like/:id
         * Like a comment
     * /mark/:id
-        * Like a comment
+        * Mark a comment as correct
 * /catalogue	
     * POST: adds videos to database. Middleware reads FormData
     * GET: gets all videos from database
