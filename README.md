@@ -16,9 +16,7 @@ $ mkdir mongo-data
 $ mongod --dbpath mongo-data
 ```
 
-
-
-    This will set up the local database.
+This will set up the local database.
 
 2. In the root directory, run in Terminal
 
