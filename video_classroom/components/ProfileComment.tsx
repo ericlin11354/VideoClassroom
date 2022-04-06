@@ -57,7 +57,7 @@ export const ProfileComment: React.FC<ProfileComment> = ({
             <CommentStats>
                 <SmallText size="70%" color={MainTheme.colors.subtext} >{comment.username}</SmallText>
                 <SmallText size="70%" color={MainTheme.colors.subtext}>{comment.date.toString()}</SmallText>
-                <Counter size="70%" color={MainTheme.colors.subtext} icon={ChatLeft} >{comment.replies.length}</Counter>
+                {/* <Counter size="70%" color={MainTheme.colors.subtext} icon={ChatLeft} >{comment.replies.length}</Counter> */}
                 <Counter size="70%" color={MainTheme.colors.subtext} icon={Like} >{comment.likes}</Counter>
             </CommentStats>
             <SmallText>{comment.comment}</SmallText>
