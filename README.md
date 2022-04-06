@@ -11,7 +11,7 @@ Deployed at: [https://csc309-team18.herokuapp.com/](https://csc309-team18.heroku
 
 1. In the root directory, run in Terminal 
 
-    ```
+```
 $ mkdir mongo-data
 $ mongod --dbpath mongo-data
 ```
@@ -22,7 +22,7 @@ $ mongod --dbpath mongo-data
 
 2. In the root directory, run in Terminal
 
-    ```
+```
 $ npm run build
 $ npm start
 ```
