@@ -87,7 +87,7 @@ export const Commenter: React.FC<CommenterProps> = ({
                 parent: parentComment && parentComment.id,
             }
         
-            const url = process.env.SERVER_URL + '/api/comment/' + vid;
+            const url = '/api/comment/' + vid;
             const request = new Request(url, {
                 method: 'post',
                 body: JSON.stringify(data),
@@ -132,7 +132,7 @@ export const Commenter: React.FC<CommenterProps> = ({
         }
     
         const cid = parentComment.id
-        const url = process.env.SERVER_URL + '/api/comment/like/' + cid;
+        const url = '/api/comment/like/' + cid;
         const request = new Request(url, {
             method: 'post',
             headers: {
@@ -162,7 +162,7 @@ export const Commenter: React.FC<CommenterProps> = ({
         }
 
         const cid = parentComment.id
-        const url = process.env.SERVER_URL + '/api/comment/' + cid;
+        const url = '/api/comment/' + cid;
         const request = new Request(url, {
             method: 'delete',
             headers: {
@@ -196,7 +196,7 @@ export const Commenter: React.FC<CommenterProps> = ({
         }
 
         const cid = parentComment.id
-        const url = process.env.SERVER_URL + '/api/comment/mark/' + cid;
+        const url = '/api/comment/mark/' + cid;
         const request = new Request(url, {
             method: 'post',
             headers: {

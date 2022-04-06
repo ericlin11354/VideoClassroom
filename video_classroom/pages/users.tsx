@@ -30,7 +30,7 @@ export const Users: React.FC<UsersProps> = ({
     })
     
     const getUsers = (): void => {
-        const url = process.env.SERVER_URL + '/api/users/';
+        const url = '/api/users/';
         const request = new Request(url, {
             method: 'get', 
             headers: {
@@ -76,7 +76,7 @@ export const Users: React.FC<UsersProps> = ({
     const getDeleteUser = (user: any): eventFunction => {
         
         const deleteUser = (e: React.MouseEvent<HTMLElement>): void => {
-            const url = process.env.SERVER_URL + '/api/users/';
+            const url = '/api/users/';
             const data = {
                 username: user.username,
             }

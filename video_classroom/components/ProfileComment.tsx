@@ -25,7 +25,7 @@ export const ProfileComment: React.FC<ProfileComment> = ({
     const [videoTitle, setVideoTitle] = useState<string>('');
     
     useEffect(() => {
-        const url = process.env.SERVER_URL + '/api/catalogue/' + comment.videoid;
+        const url = '/api/catalogue/' + comment.videoid;
         const request = new Request(url, {
             method: 'get', 
             headers: {
