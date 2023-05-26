@@ -2,7 +2,7 @@
 
 
 
-Deployed at: [https://csc309-team18.herokuapp.com/](https://csc309-team18.herokuapp.com/)
+Deployed at: ~~[https://csc309-team18.herokuapp.com/](https://csc309-team18.herokuapp.com/)~~ Deprecated
 
 
 # Instructions to run locally:
