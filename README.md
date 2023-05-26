@@ -1,7 +1,3 @@
-# team18
-
-
-
 Deployed at: ~~[https://csc309-team18.herokuapp.com/](https://csc309-team18.herokuapp.com/)~~ Deprecated
 
 
